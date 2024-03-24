@@ -1,0 +1,52 @@
+.post {
+    display: inline-block;
+    margin-left: 50px;
+    width: 500px;
+    height: 400px;
+    background-color: #ffffff;
+    border: 2px solid #343fdf;
+    border-radius: 20px;
+    border-start-end-radius: 50px;
+    box-shadow: 5px 5px 5px #888888;
+    color: #fff;
+    text-align: center;
+    line-height: 100px;
+}
+.post p {
+    width: 420px;
+    height: 300px;
+    max-width: 100%;
+    color: black;
+    text-align: left;
+    line-height: normal;
+    margin-left: 40px;
+    margin-right: 40px;
+    border: #343fdf;
+    overflow: hidden; /* Masque le contenu débordant */
+    white-space: pre-wrap; /* Permet le retour à la ligne */
+    word-wrap: break-word; /* Gère le débordement du mot */
+
+
+}
+
+.subject {
+    display: flex;
+    justify-content: left;
+    margin-right: 40px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+
+
+.post .logo {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.content {
+    margin-left: 200px;
+    padding: 50px;
+}
