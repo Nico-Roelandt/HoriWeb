@@ -13,9 +13,9 @@ include("./PageParts/header.php");
     <div class="post">
       <p>  Jean Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre PierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierre  </p>
       <div class="react">
-        <img class="logo" src="\WE4A_project\HoriWeb\icon\home.png"/>
-        <img class="logo" src="\WE4A_project\HoriWeb\icon\home.png"/>
-        <img class="logo" src="\WE4A_project\HoriWeb\icon\home.png"/>
+        <img class="logo" src="\HoriWeb\icon\home.png"/>
+        <img class="logo" src="\HoriWeb\icon\home.png"/>
+        <img class="logo" src="\HoriWeb\icon\home.png"/>
       </div>
     </div>
   <?php

@@ -12,11 +12,11 @@
 <body>
 
 <div class="sidebar">
-    <a href="/WE4A_project/HoriWeb/">
-      <img class="logo" src="\WE4A_project\HoriWeb\icon\home.png"/>
+    <a href="/HoriWeb/">
+      <img class="logo" src="\HoriWeb\icon\home.png"/>
     </a>
-    <a href="/WE4A_project/HoriWeb/trend.php">
-      <img class="logo" src="\WE4A_project\HoriWeb\icon\trend.png"/>
+    <a href="/HoriWeb/trend.php">
+      <img class="logo" src="\HoriWeb\icon\trend.png"/>
     </a>
     <a href="#"></a>
     <a href="#"></a>
