@@ -12,9 +12,12 @@
     text-align: center;
     line-height: 100px;
 }
+
+
+
 .post p {
     width: 420px;
-    height: 300px;
+    height: 200px;
     max-width: 100%;
     color: black;
     text-align: left;
@@ -25,12 +28,41 @@
     overflow: hidden; /* Masque le contenu débordant */
     white-space: pre-wrap; /* Permet le retour à la ligne */
     word-wrap: break-word; /* Gère le débordement du mot */
+}
+
+
+.date {
+    display: inline;
+    width: 80px;
+    height: 20px;
+    max-width: 100%;
+    color: black;
+    text-align: center;
+    line-height: normal;
+    margin-left: 40px;
+    margin-right: 40px;
+    border: #343fdf;
+    overflow: hidden; /* Masque le contenu débordant */
+    white-space: pre-wrap; /* Permet le retour à la ligne */
+    word-wrap: break-word; /* Gère le débordement du mot */
+}
+
+.post h3 {
+    display: inline-flex;
+    line-height: normal;
+    width: 300px;
+    color: #000000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-size: 40px;
+    text-align: left;
 
 
 }
 
 .subject {
-    display: flex;
+    display: block;
     justify-content: left;
     margin-right: 40px;
     margin-bottom: 20px;
@@ -47,6 +79,19 @@
 }
 
 .content {
-    margin-left: 200px;
-    padding: 50px;
+    margin-left: 150px;
+    padding: 25px;
+}
+
+
+/*A mettre dans le css du header*/
+
+.newPost {
+    display: flex;
+    justify-content: end;
+    margin-right: 25px;
+    margin-top: 25px;
+    
+
+
 }

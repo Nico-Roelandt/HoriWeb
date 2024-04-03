@@ -5,32 +5,48 @@ include("./PageParts/header.php");
 <!-- Contenu principal -->
 
 <div class="content">
-  <h2>Subject 1</h2>
-  <div class="subject">
   <?php
-  for($i=0; $i<10; $i++ ){
+
+
+  $result = dbSubject();
+  //Print des sujets
+  foreach($result as $row){
   ?>
-    <div class="post">
-      <p>  Jean Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre Pierre PierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierre  </p>
-      <div class="react">
-        <img class="logo" src="\HoriWeb\icon\home.png"/>
-        <img class="logo" src="\HoriWeb\icon\home.png"/>
-        <img class="logo" src="\HoriWeb\icon\home.png"/>
-      </div>
-    </div>
-  <?php
+    <div class="subject">
+      <h2><?php echo $row['name']; ?></h2>
+    <?php
+    $resultpost = dbPost($row['ID'], 10); // METTRE CONST
+    if($resultpost != null){
+
+      foreach($resultpost as $rowpost){
+      ?>
+        <div class="post">
+          <h3><?php echo $rowpost['Username']; ?></h3>
+          <div class="date"><?php echo $rowpost['CreationDate']; ?></div>
+          <p><?php echo $rowpost['Text']; ?></p>
+          <div class="react">
+            <img class="logo" src="\HoriWeb\icon\home.png"/>
+            <img class="logo" src="\HoriWeb\icon\home.png"/>
+            <img class="logo" src="\HoriWeb\icon\home.png"/>
+          </div>
+        </div>
+
+
+
+
+      <?php
+      }
+    }
   }
   ?>
-    <div class="post">
-      Bonjour
-    </div>
+
   </div>
-  <h2>Subject 2</h2>
-  <div class="subject">
-    <div class="post">
-      Bonjour
-    </div>
-  </div>
+  
+
+
+
+
+
 </div>
 </body>
 </html>
