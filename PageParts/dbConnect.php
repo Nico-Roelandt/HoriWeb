@@ -54,5 +54,33 @@ function dbPost($ID_subject, $limit){
     return $result;
 }
 
+function newPost($ID_subject, $content, $picture){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    if($picture != null){
+        $sql = "INSERT INTO posts (ID_subject, Text, Picture, CreationDate, ID_user) VALUES (?, ?, ?, NOW(), ?)";
+    } else {
+        $sql = "INSERT INTO posts (ID_subject, Text, CreationDate, ID_user) VALUES (?, ?, NOW(), ?)";
+    }
+    // Exécuter la requête SQL pour insérer les données dans la base de données
+    $stmt = $connexion->prepare($sql);
+    $stmt->bindParam(1, $ID_subject, PDO::PARAM_INT);
+    $stmt->bindParam(2, $content, PDO::PARAM_STR);
+    if($picture != null){
+        $stmt->bindParam(3, $picture, PDO::PARAM_STR);
+        $stmt->bindParam(4, $_SESSION['ID'], PDO::PARAM_INT);
+    } else {
+        $stmt->bindParam(3, $_SESSION['ID'], PDO::PARAM_INT);
+    }
+    try{
+        $stmt->execute();
+        return true;
+    } catch(PDOException $e){
+        echo "Erreur : " . $e->getMessage();
+        return false;
+    }
+}
 
 ?>

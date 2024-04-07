@@ -1,7 +1,23 @@
 
 <?php
 include("./PageParts/header.php");
+
+if(isset($_SESSION['error'])){
+  $hasError = '1';
+  unset($_SESSION['error']);
+  echo "<script src='./JavaScript/script.js'></script>";
+} else {
+  $hasError = '0';
+  echo "<script src='./JavaScript/script.js'></script>";
+}
+echo $hasError;
+
+
+
 ?>
+
+<div onload="errorPost(1)" />
+
 <!-- Contenu principal -->
 
 <div class="content">

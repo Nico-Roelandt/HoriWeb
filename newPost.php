@@ -16,11 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Récupérer les données soumises par le formulaire
     $subject = $_POST['subject'];
     $content = $_POST['content'];
-    //A FINIR
-    if(isset($_POST['picture']){
-        $picture = $_POST['picture'];
-    }
     // Vous pouvez également traiter le fichier image ici si nécessaire
+    if(isset($_FILES['picture'])){
+        $picture = $_FILES['picture'];
+    } else {
+      $picture = null;
+    }
+  
 
     //Recupération du ID du subject
     foreach($result as $row){
@@ -30,15 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 
-    // Exécuter la requête SQL pour insérer les données dans la base de données
-    $sql = "INSERT INTO posts (ID_subject, Text, Picture, CreationDate, ID_user) VALUES (?, ?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $ID_subject, $content, $picture, $_SESSION['ID']);
-    $stmt->execute();
-    $stmt->close();
+    // Insérer les données dans la base de données
+    if(newPost($ID_subject, $content, $picture) == false){
+        $_SESSION['error'] = "Erreur lors de l'insertion des données";
+    }
+
+
 
     // Rediriger l'utilisateur vers une autre page après l'insertion des données
-    header("Location: autre_page.php");
+    header("Location: index.php");
     exit();
 }
 

@@ -14,6 +14,7 @@
 </head>
 <body>
 <?php
+session_start();
 $dbConnectPath = "./PageParts/dbConnect.php";
 if (file_exists($dbConnectPath)) {
     require_once($dbConnectPath);
