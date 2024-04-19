@@ -1,54 +1,12 @@
 
 <?php
-include("./PageParts/header.php");
-
-
+include("PageParts/header.php");
 //Request list of subjects
 $result = dbSubject();
-
-
-
-
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Le formulaire a été soumis, donc traitons les données
-
-    // Récupérer les données soumises par le formulaire
-    $subject = $_POST['subject'];
-    $content = $_POST['content'];
-    // Vous pouvez également traiter le fichier image ici si nécessaire
-    if(isset($_FILES['picture'])){
-        $picture = $_FILES['picture'];
-    } else {
-      $picture = null;
-    }
-  
-
-    //Recupération du ID du subject
-    foreach($result as $row){
-        if($row['name'] == $subject){
-            $ID_subject = $row['ID'];
-        }
-    }
-
-
-    // Insérer les données dans la base de données
-    if(newPost($ID_subject, $content, $picture) == false){
-        $_SESSION['error'] = "Erreur lors de l'insertion des données";
-    }
-
-
-
-    // Rediriger l'utilisateur vers une autre page après l'insertion des données
-    header("Location: index.php");
-    exit();
-}
-
 ?>
-
 <div class="container mt-5">
     <h2 class="mb-4">Nouvelle publication</h2>
-    <form method="POST">
+    <form method="POST" action="./action/newPost.php">
       <div class="mb-3">
         <label for="title" class="form-label">Sujet</label>
         <select class="form-select" id="subject" name="subject" required>

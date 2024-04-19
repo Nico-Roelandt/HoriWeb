@@ -87,11 +87,14 @@
 /*A mettre dans le css du header*/
 
 .newPost {
-    display: flex;
-    justify-content: end;
+    display: block;
+    justify-content: flex-end;
+    align-items: center;
+    height: 50px;
     margin-right: 25px;
     margin-top: 25px;
-    
+}
 
-
+.newPost .btn {
+    margin-left: auto; /* Ajoute une marge à gauche pour aligner le bouton à droite */
 }

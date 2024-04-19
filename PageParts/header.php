@@ -1,3 +1,25 @@
+
+
+
+<?php
+require_once("dbConnect.php");
+
+  if(!isset($_SESSION)){
+    session_start();
+  }
+
+
+
+
+
+
+
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,18 +32,8 @@
     <link rel="stylesheet" href="./style/post.css">
     <link rel="stylesheet" href="./style/newPost.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-</head>
+  </head>
 <body>
-<?php
-session_start();
-$dbConnectPath = "./PageParts/dbConnect.php";
-if (file_exists($dbConnectPath)) {
-    require_once($dbConnectPath);
-} else {
-    die("Error: Unable to include dbConnect.php");
-}
-?>
 
 
 <div class="sidebar">
@@ -36,6 +48,8 @@ if (file_exists($dbConnectPath)) {
 </div>
 <?php if(/*isset($_SESSION['ID']) && */$_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){ ?>
   <div class="newPost">
-    <a class="btn btn-primary btn-lg" href="newPost.php" role="button">Nouvelle publication</a>
+  <a class="btn btn-primary btn-lg float-right" href="newPost.php" role="button">Nouvelle publication</a>
   </div>
 <?php } ?>
+
+
