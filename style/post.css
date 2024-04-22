@@ -86,8 +86,8 @@
 
 /*A mettre dans le css du header*/
 
-.newPost {
-    display: block;
+.button {
+    display: flex;
     justify-content: flex-end;
     align-items: center;
     height: 50px;
@@ -95,6 +95,6 @@
     margin-top: 25px;
 }
 
-.newPost .btn {
-    margin-left: auto; /* Ajoute une marge à gauche pour aligner le bouton à droite */
+.button a {
+    margin-left: 25px;
 }

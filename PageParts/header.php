@@ -46,10 +46,12 @@ require_once("dbConnect.php");
     <a href="#"></a>
     <a href="#"></a>
 </div>
-<?php if(/*isset($_SESSION['ID']) && */$_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){ ?>
-  <div class="newPost">
-  <a class="btn btn-primary btn-lg float-right" href="newPost.php" role="button">Nouvelle publication</a>
-  </div>
-<?php } ?>
+<div class="button">
+<?php if(isset($_COOKIE['TOKEN']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){ ?>
+    <a class="btn btn-primary btn-lg float-right" href="newPost.php" role="button">Nouvelle publication</a>
+<?php } else { ?>
+    <a class="btn btn-primary btn-lg float-right" href="login.php" role="button">Se connecter</a>
+    <a class="btn btn-primary btn-lg float-right" href="newAccount.php" role="button">Inscription</a>
 
-
+  <?php } ?>
+</div>
