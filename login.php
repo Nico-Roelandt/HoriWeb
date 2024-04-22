@@ -1,89 +1,68 @@
+
+<?php
+include("./PageParts/header.php");
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
 <meta charset="UTF-8">
 <title>HoriWeb-Login </title>
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      
+    }
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="submit"] {  
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      
+    }
+    input[type="submit"] {
+      background-color: blue;
+      color: white;
+      
+    }
+    input[type="submit"]:hover {
+      background-color: blue;
+    }
+  </style>
+</head> 
 <body>
-<div id="MainContainer">
-	<h1>Login</h1>
-    <p><a href="./newAccount.php" class="endlink">Créer un nouveau compte >></a><br><br></p>
-    <?php
-	if(isset($_POST["name"]) && isset($_POST["password"])){
-		$mail = $_POST["mail"];
-		$password = md5($_POST["password"]);
-		$loginAttempted = true;
-	}
-	
-	elseif ( isset( $_COOKIE["mail"] ) && isset( $_COOKIE["password"] ) ) {
-		$name = $_COOKIE["mail"];
-		$password = $_COOKIE["password"];
-		$loginAttempted = true;
-	}
-	else {
-		$loginAttempted = false;
-	}
-	
-	
-	$loginSuccessful = false;
-
-	if ( $loginAttempted ){
-		$loginSuccessful = ($mail == "elie.vitrai@gmail.com") && ($password == md5("Elie"));
-	}
-	
-	if ($loginSuccessful == false){
-	
-		if ($loginAttempted == false){
-			echo '<h3>Pas de données recues = le formulaire s\'affiche</h3>';
-		}
-		else {
-			echo '<h3 class="warning">Login tenté, mais Incorrect!</h3>';
-		}
 
 
-	?>
-	<form action="./login.php" method="post">
-	
-		<div class="formbutton">Login</div>
-		<div>
-			<label for="name">Login :</label>
-			<input autofocus type="text" name="name">
-		</div>
-		<div>
-			<label for="password">Password :</label>
-			<input type="password" name="password">
-		</div>
-		<div class="formbutton">
-			<button type="submit">connexion</button>
-		</div>
-	</form>
-	<hr>
-	<?php
-
-	}
-	else {
-
-	echo '<h3>Login réussi!</h3>';
-
-	
-	setcookie('name', $name, time()+3600*24);
-    setcookie('password', $password, time()+3600*24);
-
-	?>
-	
-	<hr>
-	<p><a class="endlink" href="./home.php">Aller sur la page d'acceuil &gt;&gt;</a></p>
-	<br>
-	<br>
-	<?php
-
-	
-}	
-
-?>
 
 </div>
+    <form action="./login.php" method="post">
+        <div class="container">
+        <h2>Connexion</h2> 
+        <label for="username">Adresse e-mail:</label>		
+        <input autofocus type="text" name="mail">
+        <label for="password">Mot de passe:</label>
+        <input type="password" name="password">
+        <input type="submit" value="Se connecter">
+        <div class="create-account">
+            <p>Vous n'avez pas de compte ? <a href="./newAccount.php">Créer un compte</a></p>
+        </div>
+        </div>
 </body>
 
 
+?>
+  
