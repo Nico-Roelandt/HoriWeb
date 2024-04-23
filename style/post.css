@@ -1,5 +1,47 @@
 
+.popup {
+    display: none;
+    z-index: 2000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
 
+.popup-content {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+}
+.popup-content h2 {
+  text-align: center;
+}
+input[type="text"],
+input[type="password"],
+input[type="submit"] {  
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  
+}
+input[type="submit"] {
+  background-color: blue;
+  color: white;
+  
+}
+input[type="submit"]:hover {
+  background-color: blue;
+}
 
 
 .post {
