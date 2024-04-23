@@ -33,9 +33,9 @@ include("./PageParts/header.php");
           <div class="date"><?php echo $rowpost['CreationDate']; ?></div>
           <p><?php echo $rowpost['Text']; ?></p>
           <div class="react">
-            <img class="logo" src="\HoriWeb\icon\home.png"/>
-            <img class="logo" src="\HoriWeb\icon\home.png"/>
-            <img class="logo" src="\HoriWeb\icon\home.png"/>
+            <img class="logo" src="\HoriWeb\icon\comment.png"/>
+            <img class="logo" src="\HoriWeb\icon\like.png"/>
+            <img class="logo" src="\HoriWeb\icon\unlike.png" />
           </div>
         </div>
 
