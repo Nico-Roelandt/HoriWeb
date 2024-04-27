@@ -83,4 +83,35 @@ function newPost($ID_subject, $content, $picture){
     }
 }
 
+function getComments($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT *
+        FROM joint_comment jc
+        INNER JOIN posts p ON jc.ID_post = p.ID
+        INNER JOIN posts c ON jc.ID_comment = p.ID
+        INNER JOIN users u ON c.ID_user = u.ID
+        WHERE p.ID = :ID
+    ");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+    $result = $requete->fetchAll();
+
+    // Vérification des erreurs
+    if ($result === false) {
+        // Si une erreur se produit lors de l'exécution de la requête
+        $errorInfo = $requete->errorInfo();
+        echo "Erreur lors de l'exécution de la requête : " . $errorInfo[2];
+        // Retourner une valeur null ou une autre valeur appropriée pour indiquer une erreur
+        return null;
+    }
+    return $result;
+}
+
+
+
+
+
 ?>

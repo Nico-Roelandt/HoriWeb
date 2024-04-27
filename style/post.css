@@ -109,11 +109,10 @@ input[type="submit"]:hover {
 
 .subject {
     display: block;
-    justify-content: left;
     margin-right: 40px;
     margin-bottom: 20px;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     white-space: nowrap;
 }
 
