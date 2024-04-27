@@ -35,7 +35,7 @@ function dbSubject(){
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("SELECT * FROM subjects s INNER JOIN joint_subject j ON j.ID_subject = s.ID WHERE j.ID_user = 1");
+    $requete = $connexion->prepare("SELECT * FROM subjects s INNER JOIN joint_subject j ON j.ID_subject = s.ID_subject WHERE j.ID_user = 1");
     $requete->execute();
     $result = $requete->fetchAll();
     return $result;
@@ -46,7 +46,7 @@ function dbPost($ID_subject, $limit){
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("SELECT * FROM posts p INNER JOIN users ON p.ID_user = users.ID WHERE p.ID_subject = :ID_subject ORDER BY CreationDate DESC LIMIT :limit ");
+    $requete = $connexion->prepare("SELECT * FROM posts p INNER JOIN users ON p.ID_user = users.ID_user WHERE p.ID_subject = :ID_subject ORDER BY CreationDate DESC LIMIT :limit ");
     $requete->bindParam(':ID_subject', $ID_subject, PDO::PARAM_INT);
     $requete->bindParam(':limit', $limit, PDO::PARAM_INT);
     $requete->execute();
@@ -90,24 +90,19 @@ function getComments($ID){
     }
     $requete = $connexion->prepare("SELECT *
         FROM joint_comment jc
-        INNER JOIN posts p ON jc.ID_post = p.ID
-        INNER JOIN posts c ON jc.ID_comment = p.ID
-        INNER JOIN users u ON c.ID_user = u.ID
-        WHERE p.ID = :ID
+        LEFT JOIN posts p ON jc.ID_post = p.ID_post
+        LEFT JOIN posts c ON jc.ID_comment = p.ID_post
+        LEFT JOIN users u ON c.ID_user = u.ID_user
+        WHERE p.ID_post = :ID
     ");
     $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
     $requete->execute();
     $result = $requete->fetchAll();
-
-    // Vérification des erreurs
-    if ($result === false) {
-        // Si une erreur se produit lors de l'exécution de la requête
-        $errorInfo = $requete->errorInfo();
-        echo "Erreur lors de l'exécution de la requête : " . $errorInfo[2];
-        // Retourner une valeur null ou une autre valeur appropriée pour indiquer une erreur
-        return null;
+    if($result != null){
+        return $result;
+    } else {
+        return $requete->errorInfo();
     }
-    return $result;
 }
 
 
