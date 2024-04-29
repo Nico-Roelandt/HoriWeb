@@ -45,6 +45,9 @@ require_once("dbConnect.php");
     <a href="/HoriWeb/trend.php">
       <img class="logo" src="\HoriWeb\icon\trend.png"/>
     </a>
+    <a href="/HoriWeb/user.php">
+      <img class="logo" src="\HoriWeb\icon\user.png"/>
+    </a>
     <a href="#"></a>
     <a href="#"></a>
 </div>

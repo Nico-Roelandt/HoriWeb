@@ -1,10 +1,7 @@
 <?php
-
+$rootpath="localhost/HoriWeb";
 global $connexion;
-// Connexion à la base de données à chaque page (sinon non)
-if(!isset($connexion)){
-    $connexion = dbConnect();
-}
+// Connexion à la base de données à chaque page (sinon non)}
 function dbConnect(){
     $servername = "localhost";
     $username = "root";
@@ -12,20 +9,18 @@ function dbConnect(){
     $dbname = "horiweb";
     global $connexion;
 
+    $connexion = new mysqli($servername, $username, $password, $dbname);
 
-    // Check connection
-    try {
-        $connexion = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    } catch(PDOException $e) {
-        // Gestion des erreurs de connexion
-        echo "Erreur de connexion : " . $e->getMessage();
-    }
+
+    if ($connexion->connect_error) {
+        die("Connection failed: " . $connexion->connect_error);
+        }
 }
 
 
 function dbDisconnect(){
 	global $connexion;
-	$connexion->close();
+	$connexion= null;
 }
 
 
@@ -81,6 +76,62 @@ function newPost($ID_subject, $content, $picture){
         echo "Erreur : " . $e->getMessage();
         return false;
     }
+}
+function SecurizeString_ForSQL($string) {
+    $string = trim($string);
+    $string = stripcslashes($string);
+    $string = addslashes($string);
+    $string = htmlspecialchars($string);
+    return $string;
+}
+
+function CheckNewAccountForm(){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $creationAttempted = false;
+    $creationSuccessful = false;
+    $error = NULL;
+
+    //Données reçues via formulaire?
+    if(isset($_POST["firstname"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
+
+        $creationAttempted = true;
+
+        //Form is only valid if password == confirm, and username is at least 4 char long
+        
+        
+        if ( $_POST["password"] != $_POST["confirm"] ){
+            $error = "Le mot de passe et sa confirmation sont différents";
+        }
+        else {
+            $firstname = SecurizeString_ForSQL($_POST["firstname"]);
+            $name = SecurizeString_ForSQL($_POST["name"]);
+            $date = SecurizeString_ForSQL($_POST["date"]);
+            $mail = SecurizeString_ForSQL($_POST["mail"]);
+		    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+            $query = "INSERT INTO `users` VALUES (NOW(),'$firstname', '$name','$mail','$date', '$password', 'aaa','bdche','cbeih')";
+            $connexion->query($query); 
+
+            if( mysqli_affected_rows($connexion) == 0 ) 
+            {
+                $error = "Erreur lors de l'insertion SQL. Essayez un nom/password sans caractères spéciaux";
+            }
+            else{
+                $creationSuccessful = true;
+            }
+		    
+        }
+
+	}
+	
+	$resultArray = ['Attempted' => $creationAttempted, 
+					'Successful' => $creationSuccessful, 
+					'ErrorMessage' => $error];
+
+    return $resultArray;
 }
 
 ?>
