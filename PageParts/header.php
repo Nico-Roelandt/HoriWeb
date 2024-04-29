@@ -60,7 +60,7 @@ require_once("dbConnect.php");
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">Connexion</h5>
+        <h5 class="modal-title" id="loginModalLabel">Comments</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -80,6 +80,29 @@ require_once("dbConnect.php");
         <div class="create-account">
           <p>Vous n'avez pas de compte ? <a href="./newAccount.php">Créer un compte</a></p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="comment" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Connexion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer d-flex justify-content-center w-auto">
+        <!--- ajoute de commentaire baser dans le footer --->
+        <form>
+          <div class="mb-3">
+            <label for="comment" class="form-label">Commentaire:</label>
+            <input type="text" class="form-control" id="comment" name="comment" autofocus required>
+          </div>
+          <button type="submit" class="btn btn-primary">Envoyer</button>
+        </form>
       </div>
     </div>
   </div>

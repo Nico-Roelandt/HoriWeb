@@ -1,22 +1,77 @@
 <?php
-include("./PageParts/header.php");
+include("./PageParts/dbConnect.php");
+dbConnect();
+$newAccountStatus = CheckNewAccountForm();
+if(isset($newAccountStatus) && $newAccountStatus == false){
+    echo "Erreur lors de la création du compte : " + $newAccountStatus;
+} else if(isset($newAccountStatus) && $newAccountStatus == true){
+    echo $newAccountStatus;
+} else {
+    echo "Veuillez remplir le formulaire";
+}
+
 ?>
-  <form method="$_GET" class="container">
-    <h2>Créer un compte</h2>
-    <label for="firstname">Prénom:</label>
-    <input autofocus type="text" name="prénom">
-    <label for="name">Nom:</label>
-    <input type="text" name="name">
-    <label for="username">Adresse e-mail:</label>
-    <input type="text" name="mail">
-    <label for="password">Mot de passe:</label>
-    <input type="password" id ="password" name="password">
-    <label for="date">Date de naissance:</label>
-    <input type="date"/>
-    <label for ="password">Confirmer le mot de passe:</label>
-    <input type="password" name="password">
-    <input type="submit" value="Créer le compte">
+<title>Connexion</title>
+<?php
+
+?>
+
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      
+    }
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="submit"] {  
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+<body>
+  <form action="#" method="post">
+    <div class="container">
+      <h2>Créer un compte</h2>
+      <label for="firstname">Prénom:</label>
+      <input autofocus type="text" id="prenom" name="firstname" required>
+      <label for="name">Nom:</label>
+      <input type="text" id="name" name="name" required>
+      <label for="date">Date de naissance:</label>
+      <input type="date" name="date" required/></br>
+      <label for="mail">Adresse e-mail:</label>
+      <input type="text" name="mail" required>
+      <label for="password">Mot de passe:</label>
+      <input type="password" id ="password" name="password" required>
+      <label for ="confirm">Confirmer le mot de passe:</label>
+      <input type="password" id="confirm" name="confirm"> 
+      <input type="submit" value="Créer le compte" required>
+    </div>
   </form>
 </body>
 
-</html>
+<?php
+dbDisconnect()
+?>

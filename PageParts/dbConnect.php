@@ -24,8 +24,8 @@ function dbConnect(){
 
 
 function dbDisconnect(){
-	global $connexion;
-	$connexion->close();
+    global $connexion;
+    $connexion = null;
 }
 
 
@@ -105,8 +105,88 @@ function getComments($ID){
     }
 }
 
+function login($username, $password){
+
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT * FROM users WHERE Username = :username");
+    $requete->bindParam(':username', $username, PDO::PARAM_STR);
+    $requete->execute();
+    $result = $requete->fetch();
+    if($result != null){
+        if(password_verify($password, $result['Password'])){
+            $_SESSION['ID'] = $result['ID_user'];
+            $_SESSION['Username'] = $result['Username'];
+            $_SESSION['Email'] = $result['Email'];
+            $_SESSION['Role'] = $result['Role'];
+            header('Location: index.php');
+        } else {
+            $_SESSION['error'] = "Mot de passe incorrect";
+            header('Location: index.php');
+        }
+    } else {
+        $_SESSION['error'] = "Utilisateur inconnu";
+        header('Location: index.php');
+    }
+
+}
+
+function SecurizeString_ForSQL($string) {
+    $string = trim($string);
+    $string = stripcslashes($string);
+    $string = addslashes($string);
+    $string = htmlspecialchars($string);
+    return $string;
+}
 
 
-
+function CheckNewAccountForm(){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $creationAttempted = false;
+    $creationSuccessful = false;
+    $error = NULL;
+  
+    //Données reçues via formulaire?
+    if(isset($_POST["firstname"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
+  
+        $creationAttempted = true;
+  
+        //Form is only valid if password == confirm, and username is at least 4 char long
+        
+        
+        if ( $_POST["password"] != $_POST["confirm"] ){
+            $error = "Le mot de passe et sa confirmation sont différents";
+        }
+        else {
+            $firstname = SecurizeString_ForSQL($_POST["firstname"]);
+            $name = SecurizeString_ForSQL($_POST["name"]);
+            $date = SecurizeString_ForSQL($_POST["date"]);
+            $mail = SecurizeString_ForSQL($_POST["mail"]);
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+  
+            $query = "INSERT INTO `users` VALUES (NOW(),'$firstname', '$name','$mail','$date', '$password', 'aaa','bdche','cbeih')";
+        
+            $stmt = $connexion->prepare($query);
+            try{
+                $stmt->execute();
+                return true;
+            } catch(PDOException $e){
+                echo "Erreur : " . $e->getMessage();
+                return $e->getMessage();
+            }
+                    
+        }
+  
+  } else {
+        $error = "Veuillez remplir le formulaire";
+        return $error;
+    }
+  
+  }
 
 ?>
