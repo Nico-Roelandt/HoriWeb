@@ -1,7 +1,10 @@
 <?php
-$rootpath="localhost/HoriWeb";
+
 global $connexion;
-// Connexion à la base de données à chaque page (sinon non)}
+// Connexion à la base de données à chaque page (sinon non)
+if(!isset($connexion)){
+    $connexion = dbConnect();
+}
 function dbConnect(){
     $servername = "localhost";
     $username = "root";
@@ -9,18 +12,20 @@ function dbConnect(){
     $dbname = "horiweb";
     global $connexion;
 
-    $connexion = new mysqli($servername, $username, $password, $dbname);
 
-
-    if ($connexion->connect_error) {
-        die("Connection failed: " . $connexion->connect_error);
-        }
+    // Check connection
+    try {
+        $connexion = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    } catch(PDOException $e) {
+        // Gestion des erreurs de connexion
+        echo "Erreur de connexion : " . $e->getMessage();
+    }
 }
 
 
 function dbDisconnect(){
-	global $connexion;
-	$connexion= null;
+    global $connexion;
+    $connexion = null;
 }
 
 
@@ -30,7 +35,7 @@ function dbSubject(){
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("SELECT * FROM subjects s INNER JOIN joint_subject j ON j.ID_subject = s.ID WHERE j.ID_user = 1");
+    $requete = $connexion->prepare("SELECT * FROM subjects s INNER JOIN joint_subject j ON j.ID_subject = s.ID_subject WHERE j.ID_user = 1");
     $requete->execute();
     $result = $requete->fetchAll();
     return $result;
@@ -41,7 +46,7 @@ function dbPost($ID_subject, $limit){
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("SELECT * FROM posts p INNER JOIN users ON p.ID_user = users.ID WHERE p.ID_subject = :ID_subject ORDER BY CreationDate DESC LIMIT :limit ");
+    $requete = $connexion->prepare("SELECT * FROM posts p INNER JOIN users ON p.ID_user = users.ID_user WHERE p.ID_subject = :ID_subject ORDER BY CreationDate DESC LIMIT :limit ");
     $requete->bindParam(':ID_subject', $ID_subject, PDO::PARAM_INT);
     $requete->bindParam(':limit', $limit, PDO::PARAM_INT);
     $requete->execute();
@@ -77,6 +82,57 @@ function newPost($ID_subject, $content, $picture){
         return false;
     }
 }
+
+function getComments($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT *
+        FROM joint_comment jc
+        LEFT JOIN posts p ON jc.ID_post = p.ID_post
+        LEFT JOIN posts c ON jc.ID_comment = p.ID_post
+        LEFT JOIN users u ON c.ID_user = u.ID_user
+        WHERE p.ID_post = :ID
+    ");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+    $result = $requete->fetchAll();
+    if($result != null){
+        return $result;
+    } else {
+        return $requete->errorInfo();
+    }
+}
+
+function login($username, $password){
+
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT * FROM users WHERE Username = :username");
+    $requete->bindParam(':username', $username, PDO::PARAM_STR);
+    $requete->execute();
+    $result = $requete->fetch();
+    if($result != null){
+        if(password_verify($password, $result['Password'])){
+            $_SESSION['ID'] = $result['ID_user'];
+            $_SESSION['Username'] = $result['Username'];
+            $_SESSION['Email'] = $result['Email'];
+            $_SESSION['Role'] = $result['Role'];
+            header('Location: index.php');
+        } else {
+            $_SESSION['error'] = "Mot de passe incorrect";
+            header('Location: index.php');
+        }
+    } else {
+        $_SESSION['error'] = "Utilisateur inconnu";
+        header('Location: index.php');
+    }
+
+}
+
 function SecurizeString_ForSQL($string) {
     $string = trim($string);
     $string = stripcslashes($string);
@@ -84,6 +140,7 @@ function SecurizeString_ForSQL($string) {
     $string = htmlspecialchars($string);
     return $string;
 }
+
 
 function CheckNewAccountForm(){
     global $connexion;
@@ -93,12 +150,12 @@ function CheckNewAccountForm(){
     $creationAttempted = false;
     $creationSuccessful = false;
     $error = NULL;
-
+  
     //Données reçues via formulaire?
     if(isset($_POST["firstname"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
-
+  
         $creationAttempted = true;
-
+  
         //Form is only valid if password == confirm, and username is at least 4 char long
         
         
@@ -110,28 +167,26 @@ function CheckNewAccountForm(){
             $name = SecurizeString_ForSQL($_POST["name"]);
             $date = SecurizeString_ForSQL($_POST["date"]);
             $mail = SecurizeString_ForSQL($_POST["mail"]);
-		    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+  
             $query = "INSERT INTO `users` VALUES (NOW(),'$firstname', '$name','$mail','$date', '$password', 'aaa','bdche','cbeih')";
-            $connexion->query($query); 
-
-            if( mysqli_affected_rows($connexion) == 0 ) 
-            {
-                $error = "Erreur lors de l'insertion SQL. Essayez un nom/password sans caractères spéciaux";
+        
+            $stmt = $connexion->prepare($query);
+            try{
+                $stmt->execute();
+                return true;
+            } catch(PDOException $e){
+                echo "Erreur : " . $e->getMessage();
+                return $e->getMessage();
             }
-            else{
-                $creationSuccessful = true;
-            }
-		    
+                    
         }
-
-	}
-	
-	$resultArray = ['Attempted' => $creationAttempted, 
-					'Successful' => $creationSuccessful, 
-					'ErrorMessage' => $error];
-
-    return $resultArray;
-}
+  
+  } else {
+        $error = "Veuillez remplir le formulaire";
+        return $error;
+    }
+  
+  }
 
 ?>

@@ -1,5 +1,47 @@
 
+.popup {
+    display: none;
+    z-index: 2000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
 
+.popup-content {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+}
+.popup-content h2 {
+  text-align: center;
+}
+input[type="text"],
+input[type="password"],
+input[type="submit"] {  
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  
+}
+input[type="submit"] {
+  background-color: blue;
+  color: white;
+  
+}
+input[type="submit"]:hover {
+  background-color: blue;
+}
 
 
 .post {
@@ -15,6 +57,7 @@
     color: #fff;
     text-align: center;
     line-height: 100px;
+    overflow: hidden; /* Masque le contenu débordant */
 }
 
 
@@ -46,9 +89,6 @@
     margin-left: 40px;
     margin-right: 40px;
     border: #343fdf;
-    overflow: hidden; /* Masque le contenu débordant */
-    white-space: pre-wrap; /* Permet le retour à la ligne */
-    word-wrap: break-word; /* Gère le débordement du mot */
 }
 
 .post h3 {
@@ -67,25 +107,22 @@
 
 .subject {
     display: block;
-    justify-content: left;
     margin-right: 40px;
     margin-bottom: 20px;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     white-space: nowrap;
 }
 
 
 
-.post .logo {
+.post .postIcon {
     margin-left: 20px;
     margin-right: 20px;
+    width: 50px;
+    height: 50px;
 }
 
-.content {
-    margin-left: 150px;
-    padding: 25px;
-}
 
 
 /*A mettre dans le css du header*/

@@ -2,24 +2,18 @@
 include("./PageParts/dbConnect.php");
 dbConnect();
 $newAccountStatus = CheckNewAccountForm();
-
-if ($newAccountStatus["Successful"] != NULL){
-	  header("Location:http://".$rootpath."/index.php");
+if(isset($newAccountStatus) && $newAccountStatus == false){
+    echo "Erreur lors de la création du compte : " + $newAccountStatus;
+} else if(isset($newAccountStatus) && $newAccountStatus == true){
+    echo $newAccountStatus;
+} else {
+    echo "Veuillez remplir le formulaire";
 }
-else{
-  echo $newAccountStatus["ErrorMessage"];
-}
-
 
 ?>
 <title>Connexion</title>
 <?php
-    if($newAccountStatus["Successful"]){
-        echo '<h3 class="successMessage">Nouveau compte crée avec succès!</h3>';
-    }
-    elseif ($newAccountStatus["Attempted"]){
-        echo '<h3 class="errorMessage">'.$newAccountStatus['ErrorMessage'].'</h3>';
-    }
+
 ?>
 
   
@@ -62,18 +56,18 @@ else{
     <div class="container">
       <h2>Créer un compte</h2>
       <label for="firstname">Prénom:</label>
-      <input autofocus type="text" id="prénom" name="firstname">
+      <input autofocus type="text" id="prenom" name="firstname" required>
       <label for="name">Nom:</label>
-      <input type="text" id="name" name="name">
+      <input type="text" id="name" name="name" required>
       <label for="date">Date de naissance:</label>
-      <input type="date"/></br>
+      <input type="date" name="date" required/></br>
       <label for="mail">Adresse e-mail:</label>
-      <input type="text" name="mail">
+      <input type="text" name="mail" required>
       <label for="password">Mot de passe:</label>
-      <input type="password" id ="password" name="password">
+      <input type="password" id ="password" name="password" required>
       <label for ="confirm">Confirmer le mot de passe:</label>
       <input type="password" id="confirm" name="confirm"> 
-      <input type="submit" value="Créer le compte">
+      <input type="submit" value="Créer le compte" required>
     </div>
   </form>
 </body>
