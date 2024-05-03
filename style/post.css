@@ -116,7 +116,7 @@ input[type="submit"]:hover {
 
 
 
-.post .postIcon {
+.post img {
     margin-left: 20px;
     margin-right: 20px;
     width: 50px;
@@ -139,4 +139,5 @@ input[type="submit"]:hover {
 .button a {
     margin-left: 25px;
 }
+
 

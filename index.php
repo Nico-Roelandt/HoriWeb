@@ -36,10 +36,10 @@ include("./PageParts/header.php");
           <div class="date"><?php echo $rowpost['CreationDate']; ?></div>
           <p><?php echo $rowpost['Text']; ?></p>
           <div class="react">
-            <img class="btn postIcon" data-bs-toggle="modal" data-bs-target="#comment" id="<?php echo $rowpost['ID_post']; ?>" src="\HoriWeb\icon\comment.png"/>
+            <img class="btn postIcon" data-bs-toggle="modal" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-bs-target="#comment" id="<?php echo $rowpost['ID_post']; ?>" src="\HoriWeb\icon\comment.png"/>
             <script src="./JavaScript/rollComment.js"></script>
-            <img class="postIcon" src="\HoriWeb\icon\like.png"/>
-            <img class="postIcon" src="\HoriWeb\icon\unlike.png" />
+            <img class="btn postIcon" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" src="\HoriWeb\icon\like.png"/>
+            <img class="btn postIcon" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" src="\HoriWeb\icon\unlike.png" />
           </div>
         </div>
 
