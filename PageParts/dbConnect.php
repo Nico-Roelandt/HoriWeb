@@ -88,20 +88,20 @@ function getComments($ID){
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("SELECT *
+    $requete = $connexion->prepare("SELECT jc.ID_comment, c.Text, c.CreationDate, u.Username
         FROM joint_comment jc
         LEFT JOIN posts p ON jc.ID_post = p.ID_post
-        LEFT JOIN posts c ON jc.ID_comment = p.ID_post
+        LEFT JOIN posts c ON jc.ID_comment = c.ID_post
         LEFT JOIN users u ON c.ID_user = u.ID_user
         WHERE p.ID_post = :ID
     ");
     $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
     $requete->execute();
-    $result = $requete->fetchAll();
+    $result = $requete->fetchAll(PDO::FETCH_ASSOC);
     if($result != null){
         return $result;
     } else {
-        return $requete->errorInfo();
+        return null;
     }
 }
 

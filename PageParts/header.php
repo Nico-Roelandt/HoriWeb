@@ -90,12 +90,12 @@ require_once("dbConnect.php");
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">Connexion</h5>
+        <h5 class="modal-title" id="loginModalLabel">Commentaires</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body"></div>
+      <div class="modal-body">
+      </div>
       <div class="modal-footer d-flex justify-content-center w-auto">
-        <!--- ajoute de commentaire baser dans le footer --->
         <form>
           <div class="mb-3">
             <label for="comment" class="form-label">Commentaire:</label>

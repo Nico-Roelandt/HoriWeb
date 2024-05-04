@@ -5,7 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $ID = $_POST["id"];
         require_once("../PageParts/dbConnect.php");
         $result = getComments($ID);
-
         header("Content-Type: application/json");
         if($result != null){
             http_response_code(200);
