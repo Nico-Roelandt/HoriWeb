@@ -31,6 +31,7 @@ require_once("dbConnect.php");
       echo '<link rel="stylesheet" href="./style/newAccount.css">';
     } ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="../HoriWeb/Javascript/post.js"></script>
   </head>
 <body>
 
@@ -46,7 +47,7 @@ require_once("dbConnect.php");
     <a href="#"></a>
 </div>
 <div class="button">
-<?php if(isset($_COOKIE['TOKEN']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){ //PAS SUR DE LAISSER UN COOKIE ?>
+<?php if(isset($_SESSION['ID']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){ //PAS SUR DE LAISSER UN COOKIE ?>
     <a class="btn btn-primary btn-lg float-right" href="newPost.php" role="button">Nouvelle publication</a>
 <?php } else { ?>
     <a class="btn btn-primary btn-lg float-right" data-bs-toggle="modal" data-bs-target="#loginModal">Se connecter</button>
@@ -96,6 +97,7 @@ require_once("dbConnect.php");
       <div class="modal-body">
       </div>
       <div class="modal-footer d-flex justify-content-center w-auto">
+        <?php if(isset($_SESSION['ID'])){ ?>
         <form>
           <div class="mb-3">
             <label for="comment" class="form-label">Commentaire:</label>
@@ -103,6 +105,9 @@ require_once("dbConnect.php");
           </div>
           <button type="submit" class="btn btn-primary">Envoyer</button>
         </form>
+        <?php } else { ?>
+          <p>Vous devez être connecté pour commenter</p>
+        <?php } ?>
       </div>
     </div>
   </div>

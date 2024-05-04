@@ -189,4 +189,87 @@ function CheckNewAccountForm(){
   
   }
 
+function getLike($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT count(*) FROM joint_like WHERE ID_post = :ID");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+    $result = $requete->fetchAll(PDO::FETCH_ASSOC);
+    foreach($result as $row){
+        return $row['count(*)'];
+    }
+}
+
+function isLike($ID, $ID_user){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT * FROM joint_like WHERE ID_post = :ID AND ID_user = :ID_user");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->bindParam(':ID_user', $ID_user, PDO::PARAM_INT); // Liaison du paramètre ID_user
+    $requete->execute();
+    $result = $requete->fetchAll(PDO::FETCH_ASSOC);
+    foreach($result as $row){
+        if($row['ID_user'] == $ID_user){
+            return true;
+        }
+    }
+    return false;
+}
+
+
+function like($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    if(isLike($ID, $_SESSION['ID'])){
+        return false;
+    } else {
+        $requete = $connexion->prepare("INSERT INTO joint_like (ID_post, ID_user) VALUES (:ID, :ID_user)");
+        $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+        $requete->bindParam(':ID_user', $_SESSION['ID'], PDO::PARAM_INT); // Liaison du paramètre ID_user
+        $requete->execute();
+        if($requete->rowCount() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+function unlike($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    
+    if(!isLike($ID, $_SESSION['ID'])){
+        return false;
+    } else {
+        $requete = $connexion->prepare("DELETE FROM joint_like WHERE ID_post = :ID AND ID_user = :ID_user");
+        $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+        $requete->bindParam(':ID_user', $_SESSION['ID'], PDO::PARAM_INT); // Liaison du paramètre ID_user
+        $requete->execute();
+        if($requete->rowCount() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
 ?>
