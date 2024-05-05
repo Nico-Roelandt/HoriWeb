@@ -28,19 +28,41 @@ function dbDisconnect(){
     $connexion = null;
 }
 
-
-
-function dbSubject(){
+function dbSubjectRand(){
 	global $connexion;
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("SELECT * FROM subjects s INNER JOIN joint_subject j ON j.ID_subject = s.ID_subject WHERE j.ID_user = 1");
+    
+    $requete = $connexion->prepare("SELECT * FROM subjects s ORDER BY RAND() LIMIT 5");
     $requete->execute();
     $result = $requete->fetchAll();
     return $result;
 }
 
+function dbSubject($ID){
+	global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    
+    $requete = $connexion->prepare("SELECT * FROM subjects s INNER JOIN joint_subject j ON j.ID_subject = s.ID_subject WHERE j.ID_user = :ID");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT);
+    $requete->execute();
+    $result = $requete->fetchAll();
+    return $result;
+}
+function dbSubjectAll(){
+	global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    
+    $requete = $connexion->prepare("SELECT * FROM subjects ORDER BY name ASC");
+    $requete->execute();
+    $result = $requete->fetchAll();
+    return $result;
+}
 function dbPost($ID_subject, $limit){
     global $connexion;
     if(!isset($connexion)){
@@ -106,7 +128,7 @@ function getComments($ID){
 }
 
 function login($username, $password){
-
+    session_start();
     global $connexion;
     if(!isset($connexion)){
         dbConnect();
@@ -119,8 +141,6 @@ function login($username, $password){
         if(password_verify($password, $result['Password'])){
             $_SESSION['ID'] = $result['ID_user'];
             $_SESSION['Username'] = $result['Username'];
-            $_SESSION['Email'] = $result['Email'];
-            $_SESSION['Role'] = $result['Role'];
             header('Location: index.php');
         } else {
             $_SESSION['error'] = "Mot de passe incorrect";
@@ -152,7 +172,7 @@ function CheckNewAccountForm(){
     $error = NULL;
   
     //Données reçues via formulaire?
-    if(isset($_POST["firstname"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
+    if(isset($_POST["firstname"]) && isset($_POST["username"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
   
         $creationAttempted = true;
   
@@ -167,9 +187,10 @@ function CheckNewAccountForm(){
             $name = SecurizeString_ForSQL($_POST["name"]);
             $date = SecurizeString_ForSQL($_POST["date"]);
             $mail = SecurizeString_ForSQL($_POST["mail"]);
-        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+            $username = SecurizeString_ForSQL($_POST["username"]);
+            $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
   
-            $query = "INSERT INTO `users` VALUES (NOW(),'$firstname', '$name','$mail','$date', '$password', 'aaa','bdche','cbeih')";
+            $query = "INSERT INTO users (Username, FirstName, Name, email, Birthdate, Password) VALUES ('$username', '$firstname', '$name', '$mail', '$date', '$password')";
         
             $stmt = $connexion->prepare($query);
             try{
@@ -182,13 +203,11 @@ function CheckNewAccountForm(){
                     
         }
   
-  } else {
-        $error = "Veuillez remplir le formulaire";
-        return $error;
-    }
   
+  } else {
+    return "pas de données";
   }
-
+}
 function getLike($ID){
     global $connexion;
     if(!isset($connexion)){
@@ -213,53 +232,47 @@ function isLike($ID, $ID_user){
     $requete->bindParam(':ID_user', $ID_user, PDO::PARAM_INT); // Liaison du paramètre ID_user
     $requete->execute();
     $result = $requete->fetchAll(PDO::FETCH_ASSOC);
-    foreach($result as $row){
-        if($row['ID_user'] == $ID_user){
-            return true;
-        }
+    if($result != null){
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 
-function like($ID){
+function like($ID, $ID_user){
     global $connexion;
     if(!isset($connexion)){
         dbConnect();
     }
-    if(isLike($ID, $_SESSION['ID'])){
+    if(isLike($ID, $ID_user)){
+        $_SESSION['error'] = "Vous avez déjà liké ce post";
         return false;
     } else {
         $requete = $connexion->prepare("INSERT INTO joint_like (ID_post, ID_user) VALUES (:ID, :ID_user)");
         $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
-        $requete->bindParam(':ID_user', $_SESSION['ID'], PDO::PARAM_INT); // Liaison du paramètre ID_user
+        $requete->bindParam(':ID_user', $ID_user, PDO::PARAM_INT); // Liaison du paramètre ID_user
         $requete->execute();
-        if($requete->rowCount() > 0){
-            return true;
-        } else {
-            return false;
-        }
+        return true;
+        
     }
 }
 
-function unlike($ID){
+function unlike($ID, $ID_user){
     global $connexion;
     if(!isset($connexion)){
         dbConnect();
     }
     
-    if(!isLike($ID, $_SESSION['ID'])){
+    if(!isLike($ID, $ID_user)){
+        $_SESSION['error'] = "Vous n'avez pas liké ce post";
         return false;
     } else {
         $requete = $connexion->prepare("DELETE FROM joint_like WHERE ID_post = :ID AND ID_user = :ID_user");
         $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
-        $requete->bindParam(':ID_user', $_SESSION['ID'], PDO::PARAM_INT); // Liaison du paramètre ID_user
+        $requete->bindParam(':ID_user', $ID_user, PDO::PARAM_INT); // Liaison du paramètre ID_user
         $requete->execute();
-        if($requete->rowCount() > 0){
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 }
 

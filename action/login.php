@@ -1,16 +1,16 @@
 <?php
 // Include the dbConnect file
-require_once("dbConnect.php");
+require_once("../PageParts/dbConnect.php");
 
 // Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Get the username and password from the form
-    $username = $_GET['username'];
-    $password = $_GET['password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
     // Call the login() function from dbConnect file
     login($username, $password);
 }
 
-// Function to handle login
+// Go back to the index page
+header('Location: ../index.php');
 ?>

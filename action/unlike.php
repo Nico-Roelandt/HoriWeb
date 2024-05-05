@@ -1,11 +1,11 @@
 <?php
+session_start();
 // Vérification de la méthode de requête
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST["id"])) {
+    if (isset($_POST["id"]) && isset($_SESSION['ID'])) {
         $ID = $_POST["id"];
         require_once("../PageParts/dbConnect.php");
-        $result = unlike($ID);
-        header("Content-Type: application/json");
+        $result = unlike($ID, $_SESSION['ID']);
     } else {
         http_response_code(400);
         echo "Paramètre manquant";

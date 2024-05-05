@@ -2,7 +2,8 @@
 <?php
 include("PageParts/header.php");
 //Request list of subjects
-$result = dbSubject();
+$result = dbSubjectAll();
+if(isset($_SESSION)){
 ?>
 <div class="container mt-5">
     <h2 class="mb-4">Nouvelle publication</h2>
@@ -32,5 +33,11 @@ $result = dbSubject();
     </form>
   </div>
 
+<?php
+} else {
+  $_SESSION['error'] = "Vous devez être connecté pour accéder à cette page";
+  header('Location: index.php');
+}
+?>
 </body>
 </html>

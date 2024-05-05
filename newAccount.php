@@ -1,13 +1,10 @@
 <?php
 include("./PageParts/dbConnect.php");
+include("./PageParts/header.php");
 dbConnect();
 $newAccountStatus = CheckNewAccountForm();
-if(isset($newAccountStatus) && $newAccountStatus == false){
-    echo "Erreur lors de la création du compte : " + $newAccountStatus;
-} else if(isset($newAccountStatus) && $newAccountStatus == true){
-    echo $newAccountStatus;
-} else {
-    echo "Veuillez remplir le formulaire";
+if($newAccountStatus != "pas de données"){
+  header('Location: index.php');
 }
 
 ?>
@@ -55,18 +52,28 @@ if(isset($newAccountStatus) && $newAccountStatus == false){
   <form action="#" method="post">
     <div class="container">
       <h2>Créer un compte</h2>
+
       <label for="firstname">Prénom:</label>
       <input autofocus type="text" id="prenom" name="firstname" required>
+      
       <label for="name">Nom:</label>
       <input type="text" id="name" name="name" required>
+
+      <label for="username">Username :</label>
+      <input type="text" id="username" name="username" required>
+
       <label for="date">Date de naissance:</label>
       <input type="date" name="date" required/></br>
+
       <label for="mail">Adresse e-mail:</label>
       <input type="text" name="mail" required>
+
       <label for="password">Mot de passe:</label>
       <input type="password" id ="password" name="password" required>
+
       <label for ="confirm">Confirmer le mot de passe:</label>
       <input type="password" id="confirm" name="confirm"> 
+
       <input type="submit" value="Créer le compte" required>
     </div>
   </form>

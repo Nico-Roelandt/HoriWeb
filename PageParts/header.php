@@ -31,7 +31,7 @@ require_once("dbConnect.php");
       echo '<link rel="stylesheet" href="./style/newAccount.css">';
     } ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="../HoriWeb/Javascript/post.js"></script>
+    <script src="/HoriWeb/Javascript/post.js"></script>
   </head>
 <body>
 
@@ -47,9 +47,9 @@ require_once("dbConnect.php");
     <a href="#"></a>
 </div>
 <div class="button">
-<?php if(isset($_SESSION['ID']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){ //PAS SUR DE LAISSER UN COOKIE ?>
+<?php if(isset($_SESSION['ID']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){?>
     <a class="btn btn-primary btn-lg float-right" href="newPost.php" role="button">Nouvelle publication</a>
-<?php } else { ?>
+<?php } else if(!isset($_SESSION['ID']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newAccount.php') { ?>
     <a class="btn btn-primary btn-lg float-right" data-bs-toggle="modal" data-bs-target="#loginModal">Se connecter</button>
     <?php if($_SERVER['REQUEST_URI'] != '/HoriWeb/newAccount.php'){ ?> 
       <a class="btn btn-primary btn-lg float-right" href="newAccount.php" role="button">Inscription</a>
@@ -65,13 +65,13 @@ require_once("dbConnect.php");
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="./login.php" method="post">
+        <form action="./action/login.php" method="POST">
           <div class="mb-3">
-            <label for="email" class="form-label">Adresse e-mail:</label>
-            <input type="email" class="form-control" id="email" name="email" autofocus required>
+            <label for="username" class="form-label">Username :</label>
+            <input type="username" class="form-control" id="username" name="username" autofocus required>
           </div>
           <div class="mb-3">
-            <label for="password" class="form-label">Mot de passe:</label>
+            <label for="password" class="form-label">Mot de passe :</label>
             <input type="password" class="form-control" id="password" name="password" required>
           </div>
           <button type="submit" class="btn btn-primary">Se connecter</button>
@@ -112,3 +112,44 @@ require_once("dbConnect.php");
     </div>
   </div>
 </div>
+
+
+<?php
+// Définition de la fonction pour générer le code HTML d'un post
+function generatePostHTML($rowpost) {
+    // Extraction des données nécessaires de $rowpost
+    $postID = $rowpost['ID_post'];
+    $username = $rowpost['Username'];
+    $creationDate = $rowpost['CreationDate'];
+    $text = $rowpost['Text'];
+
+    // Début du bloc HTML pour le post
+    $html = '<div class="post" id="' . $postID . '">';
+    $html .= '<h3>' . $username . '</h3>';
+    $html .= '<div class="date">' . $creationDate . '</div>';
+    $html .= '<p>' . $text . '</p>';
+    $html .= '<div class="react" style="width: 500px; height: 80px;">';
+
+    // Bouton de commentaire
+    $html .= '<img class="btn postIcon" data-bs-toggle="modal" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-bs-target="#comment" id="' . $postID . '" src="\HoriWeb\icon\comment.png"/>';
+
+    // Bouton de like/dislike
+    if (isset($_SESSION['ID']) && isLike($postID, $_SESSION['ID'])) {
+        $html .= '<img class="btn postIcon" id="islike" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-like-id="' . $postID . '" src="\HoriWeb\icon\islike.png"/>';
+    } else {
+        $html .= '<img class="btn postIcon" id="like" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-like-id="' . $postID . '" src="\HoriWeb\icon\like.png"/>';
+    }
+
+    // Nombre de likes
+    $html .= '<span class="numberOfLike" style="margin-left:20px; margin-bottom:auto; width: 200px; height: 40px; display: inline-flex; font-size: 20px;color: black;max-width: 100%;text-align: center;line-height: normal;">';
+    $resultlike = getLike($postID);
+    $html .= ($resultlike != null) ? $resultlike : '0';
+    $html .= '</span>';
+
+    // Fermeture du bloc HTML pour le post
+    $html .= '</div></div>';
+
+    // Retourner le code HTML généré
+    return $html;
+}
+?>
