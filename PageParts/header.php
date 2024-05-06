@@ -31,7 +31,7 @@ require_once("dbConnect.php");
       echo '<link rel="stylesheet" href="./style/newAccount.css">';
     } ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="/HoriWeb/Javascript/post.js"></script>
+    <script src="/HoriWeb/Javascript/post.js" defer></script>
   </head>
 <body>
 
@@ -42,6 +42,12 @@ require_once("dbConnect.php");
     </a>
     <a href="/HoriWeb/trend.php">
       <img class="logo" src="\HoriWeb\icon\trend.png"/>
+    </a>
+    <a href="/HoriWeb/search.php">
+      <img class="logo" src="\HoriWeb\icon\loupe.png"/>
+    </a>
+    <a href="/HoriWeb/notification.php">
+      <img class="logo" src="\HoriWeb\icon\notification.png"/>
     </a>
     <a href="#"></a>
     <a href="#"></a>

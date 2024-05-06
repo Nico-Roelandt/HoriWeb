@@ -279,9 +279,31 @@ function unlike($ID, $ID_user){
 
 
 
+function deleteNotification($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("UPDATE notify SET isDelete = 1 WHERE ID_notif = :ID");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+}
 
-
-
+function dbNotification($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT * FROM notification ns LEFT JOIN notify ny ON ns.ID_notif = ny.ID_notif WHERE ny.ID_user = :ID AND isDelete = 0");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+    $result = $requete->fetchAll(PDO::FETCH_ASSOC);
+    if($result != null){
+        return $result;
+    } else {
+        return null;
+    }
+}
 
 
 

@@ -1,4 +1,15 @@
+
+
+
+
+
+
 $(document).ready(function() {
+
+
+
+
+
 
   var click = false;
   $('img.postIcon[data-bs-target="#comment"]').click(function() {
@@ -45,10 +56,21 @@ $(document).ready(function() {
 
 
 
-
-
-
-
+  $('.deleteNotif').click(function(){
+    var notificationId = $(this).data('id');
+    $.ajax({
+      url: '/HoriWeb/action/deleteNotification.php',
+      type: 'POST',
+      data: {id: notificationId},
+      success: function(data){
+        console.log('Notification supprimée');
+        $('#notification' + notificationId).remove();
+      },
+      error: function(){
+        console.log('Erreur lors de la suppression de la notification');
+      }
+    });
+  });
 
 
   $('#islike').click(function() {
@@ -92,4 +114,6 @@ $(document).ready(function() {
   });
 
 
+
 });
+
