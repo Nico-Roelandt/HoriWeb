@@ -21,7 +21,7 @@ if(!isset($_SESSION['ID'])){
                     <div class="card-body">
                         <p><?php echo $row['Message']?></p>
                         <p><?php echo $row['Date_Noficitation']?></p>
-                        <button class="btn btn-danger btn-sm deleteNotif" id="<?php echo $row['ID_notif']?>">Supprimer</button>
+                        <button class="btn btn-danger btn-sm deleteNotif" data-id="<?php echo $row['ID_notif']?>">Supprimer</button>
                     </div>
                 </div>
                 <?php

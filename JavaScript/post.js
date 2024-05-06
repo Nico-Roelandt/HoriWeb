@@ -58,6 +58,7 @@ $(document).ready(function() {
 
   $('.deleteNotif').click(function(){
     var notificationId = $(this).data('id');
+    console.log('Suppression de la notification ' + notificationId);
     $.ajax({
       url: '/HoriWeb/action/deleteNotification.php',
       type: 'POST',

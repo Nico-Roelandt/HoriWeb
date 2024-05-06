@@ -284,7 +284,7 @@ function deleteNotification($ID){
     if(!isset($connexion)){
         dbConnect();
     }
-    $requete = $connexion->prepare("UPDATE notify SET isDelete = 1 WHERE ID_notif = :ID");
+    $requete = $connexion->prepare("UPDATE notification SET isDelete = 1 WHERE ID_notif = :ID");
     $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
     $requete->execute();
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 24 avr. 2024 à 10:55
+-- Généré le : lun. 06 mai 2024 à 19:30
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 8.1.6
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `ban` (
   `ID_user` double NOT NULL,
-  `Id_Notification` double NOT NULL,
+  `ID_notif` double NOT NULL,
   `Duration` time NOT NULL,
   `isTemporary` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -84,8 +84,7 @@ CREATE TABLE `joint_subject` (
 --
 
 INSERT INTO `joint_subject` (`ID_user`, `ID_subject`) VALUES
-(1, 1),
-(1, 2);
+(0, 1);
 
 -- --------------------------------------------------------
 
@@ -94,11 +93,18 @@ INSERT INTO `joint_subject` (`ID_user`, `ID_subject`) VALUES
 --
 
 CREATE TABLE `notification` (
-  `ID_Notification` double NOT NULL,
+  `ID_notif` double NOT NULL,
   `Message` varchar(200) NOT NULL,
   `isDelete` tinyint(1) NOT NULL,
   `Date_Noficitation` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `notification`
+--
+
+INSERT INTO `notification` (`ID_notif`, `Message`, `isDelete`, `Date_Noficitation`) VALUES
+(1, 'Avertissement', 1, '2024-05-05 21:53:04');
 
 -- --------------------------------------------------------
 
@@ -107,10 +113,17 @@ CREATE TABLE `notification` (
 --
 
 CREATE TABLE `notify` (
-  `ID_Utilisateur` double NOT NULL,
-  `Id_Notification` double NOT NULL,
+  `ID_user` double NOT NULL,
+  `ID_notif` double NOT NULL,
   `isRead` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `notify`
+--
+
+INSERT INTO `notify` (`ID_user`, `ID_notif`, `isRead`) VALUES
+(0, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -119,7 +132,7 @@ CREATE TABLE `notify` (
 --
 
 CREATE TABLE `posts` (
-  `ID` double NOT NULL,
+  `ID_post` double NOT NULL,
   `ID_subject` double NOT NULL,
   `Text` varchar(300) NOT NULL,
   `Picture` varchar(50) NOT NULL,
@@ -131,9 +144,8 @@ CREATE TABLE `posts` (
 -- Déchargement des données de la table `posts`
 --
 
-INSERT INTO `posts` (`ID`, `ID_subject`, `Text`, `Picture`, `CreationDate`, `ID_user`) VALUES
-(1, 1, 'J\'aime les chats', '', '2024-03-28', 1),
-(2, 1, 'J\'aime les chats', '', '2024-03-28', 1);
+INSERT INTO `posts` (`ID_post`, `ID_subject`, `Text`, `Picture`, `CreationDate`, `ID_user`) VALUES
+(9, 1, 'maiou', '', '2024-05-05', 0);
 
 -- --------------------------------------------------------
 
@@ -142,7 +154,7 @@ INSERT INTO `posts` (`ID`, `ID_subject`, `Text`, `Picture`, `CreationDate`, `ID_
 --
 
 CREATE TABLE `subjects` (
-  `ID` double NOT NULL,
+  `ID_subject` double NOT NULL,
   `name` varchar(30) NOT NULL,
   `description` varchar(120) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -151,7 +163,7 @@ CREATE TABLE `subjects` (
 -- Déchargement des données de la table `subjects`
 --
 
-INSERT INTO `subjects` (`ID`, `name`, `description`) VALUES
+INSERT INTO `subjects` (`ID_subject`, `name`, `description`) VALUES
 (1, 'Chat', 'Sujet sur les petits chat tout pipou'),
 (2, 'Chien', 'Ici on parle de chien !');
 
@@ -162,10 +174,11 @@ INSERT INTO `subjects` (`ID`, `name`, `description`) VALUES
 --
 
 CREATE TABLE `users` (
-  `ID` double NOT NULL,
+  `ID_user` double NOT NULL,
   `FirstName` varchar(25) NOT NULL,
   `Name` varchar(25) NOT NULL,
   `Username` varchar(25) NOT NULL,
+  `email` text NOT NULL,
   `Birthdate` date NOT NULL,
   `Password` varchar(100) NOT NULL,
   `ProfilePicture` varchar(25) NOT NULL,
@@ -177,8 +190,9 @@ CREATE TABLE `users` (
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`ID`, `FirstName`, `Name`, `Username`, `Birthdate`, `Password`, `ProfilePicture`, `isAdmin`, `ProfilDescription`) VALUES
-(1, 'Nicolas', 'R', 'nico', '2024-03-11', 'password', '', 1, 'Yo');
+INSERT INTO `users` (`ID_user`, `FirstName`, `Name`, `Username`, `email`, `Birthdate`, `Password`, `ProfilePicture`, `isAdmin`, `ProfilDescription`) VALUES
+(0, 'Nicolas', 'Roelandt', 'nico2', 'nico.roelandt59@gmail.com', '2024-05-05', '$2y$10$o4L9GRegjlVSDywe5u1ACeFT9Kq3uIYvUFzJ/nz8o4laHBfT9J7Uq', '', NULL, ''),
+(1, 'admin', 'admin', 'admin', '', '0000-00-00', 'admin', '', 1, '');
 
 -- --------------------------------------------------------
 
@@ -188,7 +202,7 @@ INSERT INTO `users` (`ID`, `FirstName`, `Name`, `Username`, `Birthdate`, `Passwo
 
 CREATE TABLE `warning` (
   `ID_user` double NOT NULL,
-  `Id_Notification` double NOT NULL
+  `ID_notif` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -200,7 +214,7 @@ CREATE TABLE `warning` (
 --
 ALTER TABLE `ban`
   ADD KEY `ID_user` (`ID_user`),
-  ADD KEY `Id_Notification` (`Id_Notification`);
+  ADD KEY `Id_Notification` (`ID_notif`);
 
 --
 -- Index pour la table `followers`
@@ -234,20 +248,20 @@ ALTER TABLE `joint_subject`
 -- Index pour la table `notification`
 --
 ALTER TABLE `notification`
-  ADD PRIMARY KEY (`ID_Notification`);
+  ADD PRIMARY KEY (`ID_notif`);
 
 --
 -- Index pour la table `notify`
 --
 ALTER TABLE `notify`
-  ADD KEY `Id_Notification` (`Id_Notification`),
-  ADD KEY `ID_Utilisateur` (`ID_Utilisateur`);
+  ADD KEY `Id_Notification` (`ID_notif`),
+  ADD KEY `ID_Utilisateur` (`ID_user`);
 
 --
 -- Index pour la table `posts`
 --
 ALTER TABLE `posts`
-  ADD PRIMARY KEY (`ID`),
+  ADD PRIMARY KEY (`ID_post`),
   ADD KEY `subject` (`ID_subject`),
   ADD KEY `subject_id` (`ID_subject`),
   ADD KEY `ID_user` (`ID_user`);
@@ -256,21 +270,23 @@ ALTER TABLE `posts`
 -- Index pour la table `subjects`
 --
 ALTER TABLE `subjects`
-  ADD PRIMARY KEY (`ID`),
+  ADD PRIMARY KEY (`ID_subject`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Index pour la table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID_user`),
+  ADD UNIQUE KEY `Username` (`Username`),
+  ADD UNIQUE KEY `email` (`email`) USING HASH;
 
 --
 -- Index pour la table `warning`
 --
 ALTER TABLE `warning`
   ADD KEY `ID_user` (`ID_user`),
-  ADD KEY `Id_Notification` (`Id_Notification`);
+  ADD KEY `Id_Notification` (`ID_notif`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -280,19 +296,19 @@ ALTER TABLE `warning`
 -- AUTO_INCREMENT pour la table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `ID_Notification` double NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_notif` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `ID` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_post` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT pour la table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `ID` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_subject` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Contraintes pour les tables déchargées
@@ -302,57 +318,57 @@ ALTER TABLE `subjects`
 -- Contraintes pour la table `ban`
 --
 ALTER TABLE `ban`
-  ADD CONSTRAINT `ban_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID`),
-  ADD CONSTRAINT `ban_ibfk_2` FOREIGN KEY (`Id_Notification`) REFERENCES `notification` (`ID_Notification`);
+  ADD CONSTRAINT `ban_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`),
+  ADD CONSTRAINT `ban_ibfk_2` FOREIGN KEY (`ID_notif`) REFERENCES `notification` (`ID_notif`);
 
 --
 -- Contraintes pour la table `followers`
 --
 ALTER TABLE `followers`
-  ADD CONSTRAINT `followers_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `followers_ibfk_2` FOREIGN KEY (`ID_follower`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `followers_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `followers_ibfk_2` FOREIGN KEY (`ID_follower`) REFERENCES `users` (`ID_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `joint_comment`
 --
 ALTER TABLE `joint_comment`
-  ADD CONSTRAINT `joint_comment_ibfk_1` FOREIGN KEY (`ID_post`) REFERENCES `posts` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `joint_comment_ibfk_2` FOREIGN KEY (`ID_comment`) REFERENCES `posts` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `joint_comment_ibfk_1` FOREIGN KEY (`ID_post`) REFERENCES `posts` (`ID_post`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `joint_comment_ibfk_2` FOREIGN KEY (`ID_comment`) REFERENCES `posts` (`ID_post`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `joint_like`
 --
 ALTER TABLE `joint_like`
-  ADD CONSTRAINT `joint_like_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `joint_like_ibfk_2` FOREIGN KEY (`ID_post`) REFERENCES `posts` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `joint_like_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `joint_like_ibfk_2` FOREIGN KEY (`ID_post`) REFERENCES `posts` (`ID_post`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `joint_subject`
 --
 ALTER TABLE `joint_subject`
-  ADD CONSTRAINT `joint_subject_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `joint_subject_ibfk_2` FOREIGN KEY (`ID_subject`) REFERENCES `subjects` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `joint_subject_ibfk_1` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `joint_subject_ibfk_2` FOREIGN KEY (`ID_subject`) REFERENCES `subjects` (`ID_subject`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `notify`
 --
 ALTER TABLE `notify`
-  ADD CONSTRAINT `notify_ibfk_1` FOREIGN KEY (`Id_Notification`) REFERENCES `notification` (`ID_Notification`),
-  ADD CONSTRAINT `notify_ibfk_2` FOREIGN KEY (`ID_Utilisateur`) REFERENCES `users` (`ID`);
+  ADD CONSTRAINT `notify_ibfk_1` FOREIGN KEY (`ID_notif`) REFERENCES `notification` (`ID_notif`),
+  ADD CONSTRAINT `notify_ibfk_2` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`);
 
 --
 -- Contraintes pour la table `posts`
 --
 ALTER TABLE `posts`
-  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`ID_subject`) REFERENCES `subjects` (`ID`),
-  ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`ID_subject`) REFERENCES `subjects` (`ID_subject`),
+  ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `warning`
 --
 ALTER TABLE `warning`
-  ADD CONSTRAINT `warning_ibfk_1` FOREIGN KEY (`Id_Notification`) REFERENCES `notification` (`ID_Notification`),
-  ADD CONSTRAINT `warning_ibfk_2` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID`);
+  ADD CONSTRAINT `warning_ibfk_1` FOREIGN KEY (`ID_notif`) REFERENCES `notification` (`ID_notif`),
+  ADD CONSTRAINT `warning_ibfk_2` FOREIGN KEY (`ID_user`) REFERENCES `users` (`ID_user`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
