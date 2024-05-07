@@ -1,4 +1,3 @@
-
 <?php
 include("./PageParts/header.php");
 if(!isset($_SESSION)){
@@ -19,6 +18,8 @@ if ($connexion) {
         $firstname=$result[0]["FirstName"];
         $description=$result[0]["ProfilDescription"];
         $picture=$result[0]["ProfilePicture"];
+        $date=$result[0]["Birthdate"];
+        $mail=$result[0]["email"];
     }
 
     $sql = "SELECT COUNT(*) from posts where ID_user=1";
@@ -30,10 +31,6 @@ if ($connexion) {
     $stmt = $connexion->prepare($sql);
     $stmt->execute();
     $nb_follower = $stmt->fetchColumn();
-
-    $sql="SELECT * FROM posts WHERE ID_User=1 ORDER BY CreationDate DESC LIMIT :2";
-    $stmt->execute();
-    $result = $stmt->fetchAll(); 
 } else {
     echo "Erreur de connexion à la base de données.";
 }
@@ -118,30 +115,18 @@ if ($connexion) {
 </head>
 <body>
     <div class="profile">
-        <h1><?php echo $username?></h1>
+        <h1>Modifier le profil</h1>
         <img id="profilePic" src="./icon/user.png" alt="Photo de profil">
-        <p><?php echo $firstname," ", $name?></p>
-        <p><span id="postCount"><?php echo $nb_posts?></span> publications <span id="followerCount"><?php echo $nb_follower?></span> abonnés</p>
-        
         <form id="profileForm">
-            <?php echo $description?>
+            <label for="profilePicInput">Modifier la photo de profil</label>
+            <input type="file" id="profilePicInput" name="profilePic" accept="image/*">
+            <input type="text" id="username" name="username" value=<?php echo $username?>>
+            <textarea id="description" name="description" rows="4" placeholder="Description de l'utilisateur"></textarea>
+            <input type="submit" value="Enregistrer les modifications">
         </form>
     </div>
-    <a href="./updateProfile.php">Modifier le profil</a></p>
-
-    <section class="posts">
-        <h2>Publications</h2>
-        <?php
-        if($result != null){
-            foreach($result as $rowpost){
-            $postHTML = generatePostHTML($rowpost);
-            echo $postHTML;
-            }
-        }?>
-      
-    </section>
 </body>
 </html>
-<?php 
+<?php
 dbDisconnect();
 ?>

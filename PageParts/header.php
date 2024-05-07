@@ -49,6 +49,9 @@ require_once("dbConnect.php");
     <a href="/HoriWeb/notification.php">
       <img class="logo" src="\HoriWeb\icon\notification.png"/>
     </a>
+    <a href="/HoriWeb/user.php">
+      <img class="logo" src="\HoriWeb\icon\user.png"/>
+    </a>
     <a href="#"></a>
     <a href="#"></a>
 </div>
@@ -67,7 +70,7 @@ require_once("dbConnect.php");
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">Comments</h5>
+        <h5 class="modal-title" id="loginModalLabel">Connexion</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
