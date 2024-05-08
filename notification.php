@@ -17,7 +17,7 @@ if(!isset($_SESSION['ID'])){
         } else {
             foreach($result as $row){
                 ?>
-                <div class="card notif border" style="border: 5px;">
+                <div class="card notif border">
                     <div class="card-body">
                         <p><?php echo $row['Message']?></p>
                         <p><?php echo $row['Date_Noficitation']?></p>

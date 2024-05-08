@@ -305,6 +305,19 @@ function dbNotification($ID){
     }
 }
 
+function numberOfnotification($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT count(*) FROM notification ns LEFT JOIN notify ny ON ns.ID_notif = ny.ID_notif WHERE ny.ID_user = :ID AND isDelete = 0");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+    $result = $requete->fetchAll(PDO::FETCH_ASSOC);
+    foreach($result as $row){
+        return $row['count(*)'];
+    }
+}
 
 
 ?>

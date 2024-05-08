@@ -46,14 +46,14 @@ require_once("dbConnect.php");
     <a href="/HoriWeb/search.php">
       <img class="logo" src="\HoriWeb\icon\loupe.png"/>
     </a>
-    <a href="/HoriWeb/notification.php">
-      <img class="logo" src="\HoriWeb\icon\notification.png"/>
-    </a>
+    <?php if(isset($_SESSION['ID'])){ ?>
+      <a class="text-center" href="/HoriWeb/notification.php">
+        <img class="logo" src="\HoriWeb\icon\notification.png"><?php echo numberOfnotification($_SESSION['ID']) ?></img>
+      </a>
+    <?php } ?>
     <a href="/HoriWeb/user.php">
       <img class="logo" src="\HoriWeb\icon\user.png"/>
     </a>
-    <a href="#"></a>
-    <a href="#"></a>
 </div>
 <div class="button">
 <?php if(isset($_SESSION['ID']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){?>
