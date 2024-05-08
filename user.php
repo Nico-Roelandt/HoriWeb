@@ -126,8 +126,10 @@ if ($connexion) {
         <form id="profileForm">
             <?php echo $description?>
         </form>
+        <a href="./stat.php">Voir les statistiques</a>
     </div>
-    <a href="./updateProfile.php">Modifier le profil</a></p>
+    <a href="./updateProfile.php">Modifier le profil</a></br>
+    <a>Modifier le mot de passe</a>
 
     <section class="posts">
         <h2>Publications</h2>

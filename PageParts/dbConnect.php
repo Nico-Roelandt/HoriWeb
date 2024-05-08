@@ -161,53 +161,6 @@ function SecurizeString_ForSQL($string) {
     return $string;
 }
 
-
-function CheckNewAccountForm(){
-    global $connexion;
-    if(!isset($connexion)){
-        dbConnect();
-    }
-    $creationAttempted = false;
-    $creationSuccessful = false;
-    $error = NULL;
-  
-    //Données reçues via formulaire?
-    if(isset($_POST["firstname"]) && isset($_POST["username"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
-  
-        $creationAttempted = true;
-  
-        //Form is only valid if password == confirm, and username is at least 4 char long
-        
-        
-        if ( $_POST["password"] != $_POST["confirm"] ){
-            $error = "Le mot de passe et sa confirmation sont différents";
-        }
-        else {
-            $firstname = SecurizeString_ForSQL($_POST["firstname"]);
-            $name = SecurizeString_ForSQL($_POST["name"]);
-            $date = SecurizeString_ForSQL($_POST["date"]);
-            $mail = SecurizeString_ForSQL($_POST["mail"]);
-            $username = SecurizeString_ForSQL($_POST["username"]);
-            $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-  
-            $query = "INSERT INTO users (Username, FirstName, Name, email, Birthdate, Password) VALUES ('$username', '$firstname', '$name', '$mail', '$date', '$password')";
-        
-            $stmt = $connexion->prepare($query);
-            try{
-                $stmt->execute();
-                return true;
-            } catch(PDOException $e){
-                echo "Erreur : " . $e->getMessage();
-                return $e->getMessage();
-            }
-                    
-        }
-  
-  
-  } else {
-    return "pas de données";
-  }
-}
 function getLike($ID){
     global $connexion;
     if(!isset($connexion)){
@@ -304,7 +257,6 @@ function dbNotification($ID){
         return null;
     }
 }
-
 function numberOfnotification($ID){
     global $connexion;
     if(!isset($connexion)){
@@ -318,6 +270,72 @@ function numberOfnotification($ID){
         return $row['count(*)'];
     }
 }
+function CheckNewAccountForm(){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $error = NULL;
+  
+    //Données reçues via formulaire?
+    if(isset($_POST["firstname"]) && isset($_POST["username"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["password"]) && isset($_POST["confirm"])){
 
+  
+        //Form is only valid if password == confirm, and username is at least 4 char long
+        
+        
+        if ( $_POST["password"] != $_POST["confirm"] ){
+            $error = "Le mot de passe et sa confirmation sont différents";
+        }
+        else {
+            $firstname = SecurizeString_ForSQL($_POST["firstname"]);
+            $name = SecurizeString_ForSQL($_POST["name"]);
+            $date = SecurizeString_ForSQL($_POST["date"]);
+            $mail = SecurizeString_ForSQL($_POST["mail"]);
+            $username = SecurizeString_ForSQL($_POST["username"]);
+            $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+  
+            $query = "INSERT INTO users (Username, FirstName, Name, email, Birthdate, Password) VALUES ('$username', '$firstname', '$name', '$mail', '$date', '$password')";
+        
+            $stmt = $connexion->prepare($query);
+            try{
+                $stmt->execute();
+                return true;
+            } catch(PDOException $e){
+                echo "Erreur : " . $e->getMessage();
+                return $e->getMessage();
+            }
+                    
+        }
+  
+  
+  } else {
+    return "pas de données";
+  }
+}
+function update(){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $error = NULL;
+    if(isset($_POST["firstname"]) && isset($_POST["username"]) && isset($_POST["name"]) && isset($_POST["date"]) && isset($_POST["mail"]) && isset($_POST["description"])){
+        $firstname = SecurizeString_ForSQL($_POST["firstname"]);
+        $name = SecurizeString_ForSQL($_POST["name"]);
+        $date = SecurizeString_ForSQL($_POST["date"]);
+        $mail = SecurizeString_ForSQL($_POST["mail"]);
+        $username = SecurizeString_ForSQL($_POST["username"]);
+        $description = SecurizeString_ForSQL($_POST["description"]);
+        $query = "UPDATE users SET Username = $username, FirstName =$firstname, Name =$name, email=$mail, Birthdate=$date, ProfilDescription=$description) WHERE ID_user=1";
+        $stmt = $connexion->prepare($query);
+            try{
+                $stmt->execute();
+                return true;
+            } catch(PDOException $e){
+                echo "Erreur : " . $e->getMessage();
+                return $e->getMessage();
+            }
 
+    }
+}
 ?>

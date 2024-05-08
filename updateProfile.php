@@ -5,6 +5,13 @@ if(!isset($_SESSION)){
 }
 require_once("./PageParts/dbConnect.php");
 dbConnect();
+$update=update();
+if (isset($_POST['submit'])){
+    if($update != "pas de données"){
+        header('Location : user.php');
+    }
+}
+  
 
 if ($connexion) {
     $sql = "SELECT * FROM users WHERE ID_User=1";
@@ -75,18 +82,7 @@ if ($connexion) {
         }
         label {
             cursor: pointer;
-            color: #007bff;
-            text-decoration: underline;
-        }
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            box-sizing: border-box;
-            border: 1px solid #dbdbdb;
-            border-radius: 4px;
-            resize: vertical;
-            background-color: #fafafa;
+            color: black;
         }
         input[type="submit"] {
             background-color: #0095f6;
@@ -111,6 +107,11 @@ if ($connexion) {
         span {
             font-weight: bold;
         }
+        .blue-underline {
+        color: #007bff;
+        text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
@@ -118,15 +119,27 @@ if ($connexion) {
         <h1>Modifier le profil</h1>
         <img id="profilePic" src="./icon/user.png" alt="Photo de profil">
         <form id="profileForm">
-            <label for="profilePicInput">Modifier la photo de profil</label>
-            <input type="file" id="profilePicInput" name="profilePic" accept="image/*">
-            <input type="text" id="username" name="username" value=<?php echo $username?>>
-            <textarea id="description" name="description" rows="4" placeholder="Description de l'utilisateur"></textarea>
+        <label for="profilePicInput"><span class="blue-underline">Modifier la photo de profil</span></label><br>
+            <label for="firstname">Prénom:</label>
+            <input type="text" id="firstname" name="firstname" required value=<?php echo $firstname?>>
+            <label for="name">Nom:</label>
+            <input type="text" id="name" name="name" required value=<?php echo $name?>>
+            <label for="name">Username:</label>
+            <input type="text" id="username" name="username" required value=<?php echo $username?>>
+            <label for="date">Date de naissance:</label>
+            <input type="date" name="date" required value=<?php echo $date?>></br>
+            <label for="mail">Adresse e-mail:</label>
+            <input type="text" name="mail" required value=<?php echo $mail?>>
+            <label for="name">Description:</label>
+            <input type="text" name="description" value="<?php echo $description?>" >
             <input type="submit" value="Enregistrer les modifications">
         </form>
     </div>
 </body>
+
 </html>
 <?php
+
 dbDisconnect();
+
 ?>
