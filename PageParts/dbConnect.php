@@ -318,6 +318,75 @@ function numberOfnotification($ID){
         return $row['count(*)'];
     }
 }
+function addComment($ID_post, $content){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("INSERT INTO posts (ID_post, ID_subject, Text, CreationDate, ID_user) VALUES (NULL, NULL, :content, NOW(), :ID_user)");
+    $requete->bindParam(':content', $content, PDO::PARAM_STR);
+    $requete->bindParam(':ID_user', $_SESSION['ID'], PDO::PARAM_INT);
+    try{
+        $requete->execute();
+        //Ajout dans joint_comment
+        $ID_comment = $connexion->lastInsertId();
+        $requete = $connexion->prepare("INSERT INTO joint_comment (ID_post, ID_comment) VALUES (:ID_post, :ID_comment)");
+        $requete->bindParam(':ID_post', $ID_post, PDO::PARAM_INT);
+        $requete->bindParam(':ID_comment', $ID_comment, PDO::PARAM_INT);
+        try{
+            $requete->execute();
+        } catch(PDOException $e){
+            echo "Erreur : " . $e->getMessage();
+            return false;
+        }
+        return true;
+    } catch(PDOException $e){
+        echo "Erreur : " . $e->getMessage();
+        return false;
+    }
+
+    
+}
+
+function getSubject($ID){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    $requete = $connexion->prepare("SELECT ID_subject FROM posts WHERE ID_post = :ID");
+    $requete->bindParam(':ID', $ID, PDO::PARAM_INT); // Liaison du paramètre ID
+    $requete->execute();
+    $result = $requete->fetchAll(PDO::FETCH_ASSOC);
+    foreach($result as $row){
+        return $row['ID_subject'];
+    }
+}
+
+
+
+function search($query, $type){
+    global $connexion;
+    if(!isset($connexion)){
+        dbConnect();
+    }
+    if($type == "posts"){
+        $requete = $connexion->prepare("SELECT * FROM posts p INNER JOIN users ON p.ID_user = users.ID_user WHERE Text LIKE :query ORDER BY CreationDate DESC");
+    } else if($type == "users"){
+        $requete = $connexion->prepare("SELECT * FROM users WHERE Username LIKE :query");
+    } else if($type == "subject"){
+        $requete = $connexion->prepare("SELECT * FROM subjects WHERE name LIKE :query");
+    }
+    $query = "%".$query."%";
+    $requete->bindParam(':query', $query, PDO::PARAM_STR);
+    $requete->execute();
+    $result = $requete->fetchAll();
+    if($result != null){
+        return $result;
+    } else {
+        return null;
+    }
+}
+
 
 
 ?>

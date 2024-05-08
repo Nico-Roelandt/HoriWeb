@@ -13,13 +13,13 @@ $(document).ready(function() {
 
   var click = false;
   $('img.postIcon[data-bs-target="#comment"]').click(function() {
-      console.log('DEBUG1');
       if(click){
         return;
       }
       click = true;
       var btnId = $(this).attr('id');
       console.log('ID du bouton : ' + btnId);
+      
       $.ajax({
         url: '/HoriWeb/action/getComments.php',
         type: 'POST',
@@ -75,38 +75,50 @@ $(document).ready(function() {
 
 
   $('#islike').click(function() {
-      var postID = $(this).data('like-id');
-      console.log('unlike ' + postID);
-      $.ajax({
-          url: '/HoriWeb/action/unlike.php',
-          type: 'POST',
-        data: {id: postID},
-          success: function(data){
-              console.log('unlike réussi');
-              //Changer l'icone
-              $(this).find('img').attr('src', '/HoriWeb/icon/like.png');
-              //Ajouter un au compteur numberOfLike
-              var numberOfLike = $(this).find('span').text();
-              numberOfLike++;
-              $(this).find('span').text(numberOfLike);
+    var $this = $(this); // Stocker une référence à $(this)
 
-          },
-          error: function(){
-              console.log('Erreur lors du like');
-          }
-      });
+    var postID = $this.data('like-id');
+    $.ajax({
+        url: '/HoriWeb/action/unlike.php',
+        type: 'POST',
+        data: { id: postID },
+        success: function(data) {
+            
+            // Changer l'icone
+            $this.attr('src', '/HoriWeb/icon/like.png');
+            
+            // Ajouter un au compteur numberOfLike
+            var numberOfLike = parseInt($this.closest('div').find('span').text());
+            numberOfLike--;
+            $this.closest('div').find('span').text(numberOfLike);
+            $this.attr('id', 'like');
+
+        },
+        error: function() {
+            console.log('Erreur lors du like');
+        }
+    });
   });
 
+
   $('#like').click(function() {
+      var $this = $(this);
       var postID = $(this).data('like-id');
-      console.log('like ' + postID);
       $.ajax({
           url: '/HoriWeb/action/like.php',
           type: 'POST',
           data: {id: postID},
           success: function(data){
-              console.log('like réussi');
-              $(this).find('img').attr('src', '/HoriWeb/icon/unlike.png');
+            
+            // Changer l'icone
+            $this.attr('src', '/HoriWeb/icon/islike.png');
+            
+            // Ajouter un au compteur numberOfLike
+            var numberOfLike = parseInt($this.closest('div').find('span').text());
+            numberOfLike++;
+            $this.closest('div').find('span').text(numberOfLike);
+
+            $this.attr('id', 'islike');
           },
           error: function(){
               console.log('Erreur lors du like');

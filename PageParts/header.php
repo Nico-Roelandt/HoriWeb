@@ -107,7 +107,7 @@ require_once("dbConnect.php");
       </div>
       <div class="modal-footer d-flex justify-content-center w-auto">
         <?php if(isset($_SESSION['ID'])){ ?>
-        <form>
+        <form action="./action/addComment.php" method="POST">
           <div class="mb-3">
             <label for="comment" class="form-label">Commentaire:</label>
             <input type="text" class="form-control" id="comment" name="comment" autofocus required>
@@ -159,6 +159,20 @@ function generatePostHTML($rowpost) {
     $html .= '</div></div>';
 
     // Retourner le code HTML généré
+    return $html;
+}
+
+function generateUserHTML($row) {
+    $html = '<div class="user" id="' . $row['ID'] . '">';
+    $html .= '<h3>' . $row['Username'] . '</h3>';
+    $html .= '</div>';
+    return $html;
+}
+
+function generateSubjectHTML($row) {
+    $html = '<div class="subject" id="' . $row['ID_subject'] . '">';
+    $html .= '<h3>' . $row['name'] . '</h3>';
+    $html .= '</div>';
     return $html;
 }
 ?>

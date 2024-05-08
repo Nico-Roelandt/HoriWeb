@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 06 mai 2024 à 19:30
+-- Généré le : mer. 08 mai 2024 à 12:15
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 8.1.6
 
@@ -302,7 +302,7 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT pour la table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `ID_post` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ID_post` double NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `subjects`

@@ -6,7 +6,7 @@
         <?php } ?>
         <div class="toast-body">
             <?php 
-            if($_SESSION['errorNewPost'] == "true"){
+            if(isset($_SESSION['errorNewPost']) && $_SESSION['errorNewPost'] == "true"){
                 echo "Problème lors de la publication, merci de réessayer.";
             } else {
                 echo "Publication réussie.";
