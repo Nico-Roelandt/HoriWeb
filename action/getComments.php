@@ -1,8 +1,10 @@
 <?php
+session_start();    
 // Vérification de la méthode de requête
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST["id"])) {
         $ID = $_POST["id"];
+        $_SESSION['ID_post'] = $ID;
         require_once("../PageParts/dbConnect.php");
         $result = getComments($ID);
         header("Content-Type: application/json");
