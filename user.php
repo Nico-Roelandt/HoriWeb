@@ -143,8 +143,10 @@ $nb_follower = getNumberOfFollower($ID);
         <form id="profileForm">
             <?php echo $description?>
         </form>
+        <a href="./stat.php">Voir les statistiques</a>
     </div>
-    <a href="./updateProfile.php">Modifier le profil</a></p>
+    <a href="./updateProfile.php">Modifier le profil</a></br>
+    <a>Modifier le mot de passe</a>
 
     <section class="posts" style="margin: 150px; margin-top: 50px;">
         <h2>Publications</h2>
