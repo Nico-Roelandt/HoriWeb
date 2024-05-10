@@ -2,9 +2,13 @@
 include("./PageParts/dbConnect.php");
 include("./PageParts/header.php");
 dbConnect();
-$newAccountStatus = CheckNewAccountForm();
-if($newAccountStatus != "pas de données"){
-  header('Location: index.php');
+if(isset($_SESSION['ID'])){
+    header("Location: ./index.php");
+    exit();
+}
+if(isset($_SESSION['error'])){
+    echo '<div class="alert alert-danger" role="alert">'.$_SESSION['error'].'</div>';
+    unset($_SESSION['error']);
 }
 
 ?>
@@ -49,7 +53,7 @@ if($newAccountStatus != "pas de données"){
     }
   </style>
 <body>
-  <form action="#" method="post">
+  <form action="/Horiweb/action/newaccount.php" method="post">
     <div class="container">
       <h2>Créer un compte</h2>
 

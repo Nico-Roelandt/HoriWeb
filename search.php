@@ -19,10 +19,11 @@ if(isset($_SESSION['error'])){
       <input type="text" class="form-control" placeholder="Rechercher" name="query">
         <div class="input-group-append">
             <select class="form-select" name="type">
-            <option value="posts">Posts</option>
-            <option value="users">Utilisateurs</option>
-            <option value="subject">Sujets</option>
+              <option value="posts">Posts</option>
+              <option value="users">Utilisateurs</option>
+              <option value="subject">Sujets</option>
             </select>
+        </div>
       <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
     </div>
   </form>
@@ -47,6 +48,24 @@ if(isset($_SESSION['error'])){
             <div class="subject" id="<?php echo $row['ID_subject'];?>">
             <h2><?php echo $row['name']; ?></h2>
             <?php
+            if(isset($_SESSION['ID'])){
+              if(sujetIsFollow($_SESSION['ID'], $row['ID_subject'])){
+
+              ?>
+                <form action="./action/unfollowSubject.php" method="POST">
+                  <input type="hidden" name="ID_subject" value="<?php echo $row['ID_subject'];?>">
+                  <button type="submit" class="btn btn-primary">Ne plus suivre</button>
+                </form>
+                <?php
+              } else {
+                ?>
+                <form action="./action/followSubject.php" method="POST">
+                  <input type="hidden" name="ID_subject" value="<?php echo $row['ID_subject'];?>">
+                  <button type="submit" class="btn btn-primary">Suivre</button>
+                </form>
+                <?php
+              }
+            }
             $resultpost = dbPost($row['ID_subject'], 10); // METTRE CONST
             if($resultpost != null){
         
@@ -54,14 +73,13 @@ if(isset($_SESSION['error'])){
                 $postHTML = generatePostHTML($rowpost);
                 echo $postHTML;
                 }
-            }?>
+            }
           }
         }
       }
     } else {
       echo '<div class="alert alert-warning" role="alert">Veuillez entrer une recherche</div>';
     }
-
   ?>
 
 </div>

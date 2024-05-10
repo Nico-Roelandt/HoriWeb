@@ -4,39 +4,37 @@ include("./PageParts/header.php");
 if(!isset($_SESSION)){
     session_start();
 }
-require_once("./PageParts/dbConnect.php");
 dbConnect();
-
-if ($connexion) {
-    $sql = "SELECT * FROM users WHERE ID_User=1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $nombre_resultats = count($result);
-    if ($nombre_resultats > 0) {
-        $username = $result[0]["Username"];
-        $name=$result[0]["Name"];
-        $firstname=$result[0]["FirstName"];
-        $description=$result[0]["ProfilDescription"];
-        $picture=$result[0]["ProfilePicture"];
-    }
-
-    $sql = "SELECT COUNT(*) from posts where ID_user=1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
-    $nb_posts = $stmt->fetchColumn();
-
-    $sql = "SELECT COUNT(*) from followers where ID_user=1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
-    $nb_follower = $stmt->fetchColumn();
-
-    $sql="SELECT * FROM posts WHERE ID_User=1 ORDER BY CreationDate DESC LIMIT :2";
-    $stmt->execute();
-    $result = $stmt->fetchAll(); 
-} else {
-    echo "Erreur de connexion à la base de données.";
+//Déconnecter et user est null
+if(!isset($_SESSION['ID']) && !isset($_GET['user'])){
+    header("Location: ./login.php");
+    exit();
 }
+
+if(!isset($_GET['user']) || $_GET['user'] == null){
+    //Page de l'utilisateur
+    $ID = $_SESSION['ID'];
+    $User = getUser($ID);
+    $firstname = $User['FirstName'];
+    $name = $User['Name'];
+} else {
+    // Page de l'utilisateur dans le GET
+    $User = getUserByUsername($_GET['user']);
+    if($User == null){
+        $_SESSION['error'] = "Utilisateur introuvable";
+        header("Location: ./index.php");
+        exit();
+    }
+    $ID = $User['ID_user'];
+
+    $firstname = null;
+    $name = null;
+}
+$username = $User['Username'];
+$description = $User['ProfilDescription'];
+$nb_posts = getNumberOfPost($ID);
+$nb_follower = getNumberOfFollower($ID);
+
 
 ?>
 <!DOCTYPE html>
@@ -122,6 +120,25 @@ if ($connexion) {
         <img id="profilePic" src="./icon/user.png" alt="Photo de profil">
         <p><?php echo $firstname," ", $name?></p>
         <p><span id="postCount"><?php echo $nb_posts?></span> publications <span id="followerCount"><?php echo $nb_follower?></span> abonnés</p>
+        <?php if(isset($_SESSION['ID']) && $_SESSION['ID'] != $ID){
+
+          if(userIsFollow($_SESSION['ID'], $ID)){
+          ?>
+            <form action="./action/unfollowUser.php" method="POST">
+              <input type="hidden" name="ID_followed" value="<?php echo $ID;?>">
+              <button type="submit" class="btn btn-primary">Ne plus suivre</button>
+            </form>
+            <?php
+          } else {
+            ?>
+            <form action="./action/followUser.php" method="POST">
+              <input type="hidden" name="ID_followed" value="<?php echo $ID;?>">
+              <button type="submit" class="btn btn-primary">Suivre</button>
+            </form>
+            <?php
+          
+          }
+        }?>
         
         <form id="profileForm">
             <?php echo $description?>
@@ -129,15 +146,30 @@ if ($connexion) {
     </div>
     <a href="./updateProfile.php">Modifier le profil</a></p>
 
-    <section class="posts">
+    <section class="posts" style="margin: 150px; margin-top: 50px;">
         <h2>Publications</h2>
         <?php
-        if($result != null){
-            foreach($result as $rowpost){
-            $postHTML = generatePostHTML($rowpost);
-            echo $postHTML;
+        $result = dbSubjectUser($ID, 10);
+        if($result == null){
+            echo '<div class="alert alert-warning" role="alert">Vous n\'avez pas de publications sur des sujets</div>';
+        } else {
+            foreach($result as $row){
+                ?>
+                <div class="subject " id="<?php echo $row['ID_subject'];?>">
+                    <h2 style="text-align: left;"><?php echo $row['name']; ?></h2>
+                    <?php
+                    $resultpost = dbPost($row['ID_subject'], 10); // METTRE CONST
+                    if($resultpost != null){
+                        foreach($resultpost as $rowpost){
+                            $postHTML = generatePostHTML($rowpost);
+                            echo $postHTML;
+                        }
+                    }
+                }
             }
-        }?>
+        
+
+        ?>
       
     </section>
 </body>

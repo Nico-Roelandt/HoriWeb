@@ -32,6 +32,7 @@ require_once("dbConnect.php");
     } ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="/HoriWeb/Javascript/post.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   </head>
 <body>
 
@@ -40,11 +41,11 @@ require_once("dbConnect.php");
     <a href="/HoriWeb/">
       <img class="logo" src="\HoriWeb\icon\home.png"/>
     </a>
-    <a href="/HoriWeb/trend.php">
-      <img class="logo" src="\HoriWeb\icon\trend.png"/>
-    </a>
     <a href="/HoriWeb/search.php">
       <img class="logo" src="\HoriWeb\icon\loupe.png"/>
+    </a>
+    <a href="/HoriWeb/stat.php">
+      <img class="logo" src="\HoriWeb\icon\trend.png"/>
     </a>
     <?php if(isset($_SESSION['ID'])){ ?>
       <a class="text-center" href="/HoriWeb/notification.php">
@@ -54,6 +55,11 @@ require_once("dbConnect.php");
     <a href="/HoriWeb/user.php">
       <img class="logo" src="\HoriWeb\icon\user.png"/>
     </a>
+    <?php if(isset($_SESSION['ID'])){ ?>
+      <a href="/HoriWeb/action/logout.php">
+        <i class="bi bi-arrow-left-square d-flex fs-1" style="margin-left: 10px;margin-right: 10px;width: 50px;height: 50px;"></i>
+      </a>
+    <?php } ?>
 </div>
 <div class="button">
 <?php if(isset($_SESSION['ID']) && $_SERVER['REQUEST_URI'] != '/HoriWeb/newPost.php'){?>
@@ -126,46 +132,75 @@ require_once("dbConnect.php");
 <?php
 // Définition de la fonction pour générer le code HTML d'un post
 function generatePostHTML($rowpost) {
-    // Extraction des données nécessaires de $rowpost
-    $postID = $rowpost['ID_post'];
-    $username = $rowpost['Username'];
-    $creationDate = $rowpost['CreationDate'];
-    $text = $rowpost['Text'];
+  // Extraction des données nécessaires de $rowpost
+  $postID = $rowpost['ID_post'];
+  $username = $rowpost['Username'];
+  $creationDate = $rowpost['CreationDate'];
+  $text = $rowpost['Text'];
+  $isSensible = $rowpost['isSensible'];
+  if ($rowpost['Picture'] != null) {
+      $img = $rowpost['Picture'];
+  }
 
-    // Début du bloc HTML pour le post
-    $html = '<div class="post" id="' . $postID . '">';
-    $html .= '<h3>' . $username . '</h3>';
-    $html .= '<div class="date">' . $creationDate . '</div>';
-    $html .= '<p>' . $text . '</p>';
-    $html .= '<div class="react" style="width: 500px; height: 80px;">';
+  // Début du bloc HTML pour le post
+  $html = '<div class="post" id="' . $postID . '">';
+  $html .= '<a href="/HoriWeb/user.php?user=' . $username . '">';
+  $html .= '<h3 style="color: blue;">' . $username . '</h3>';
+  $html .= '</a>';
+  $html .= '<div class="date">' . $creationDate . '</div>';
 
-    // Bouton de commentaire
-    $html .= '<img class="btn postIcon" data-bs-toggle="modal" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-bs-target="#comment" id="' . $postID . '" src="\HoriWeb\icon\comment.png"/>';
+  // Vérifier si le post est sensible
+  if ($isSensible) {
+      // Si le post est sensible, ajouter un cache
+      $html .= '<div class="sensitive-content" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px;">';
+      $html .= '<p><em>Ce contenu est masqué car il est considéré sensible.</em></p>';
+      $html .= '</div>';
+  } else {
+      // Sinon, afficher le contenu du post normalement
+      $html .= '<p>' . $text . '</p>';
+      if (isset($img)) {
+          $html .= '<img src="data:image/jpeg;base64,'.base64_encode($img).'" style="max-width: 100%; max-height: 100%;"/>';
+      }
+  }
 
-    // Bouton de like/dislike
-    if (isset($_SESSION['ID']) && isLike($postID, $_SESSION['ID'])) {
-        $html .= '<img class="btn postIcon" id="islike" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-like-id="' . $postID . '" src="\HoriWeb\icon\islike.png"/>';
-    } else {
-        $html .= '<img class="btn postIcon" id="like" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-like-id="' . $postID . '" src="\HoriWeb\icon\like.png"/>';
-    }
+  // Ajouter le reste du contenu HTML
+  $html .= '<div class="react" style="width: 500px; height: 80px;">';
 
-    // Nombre de likes
-    $html .= '<span class="numberOfLike" style="margin-left:20px; margin-bottom:auto; width: 200px; height: 40px; display: inline-flex; font-size: 20px;color: black;max-width: 100%;text-align: center;line-height: normal;">';
-    $resultlike = getLike($postID);
-    $html .= ($resultlike != null) ? $resultlike : '0';
-    $html .= '</span>';
+  // Boutons d'administration (suppression, marquer sensible)
+  if (isset($_SESSION['ID']) && isAdmin($_SESSION['ID'])) {
+      $html .= '<a href="/HoriWeb/action/remove.php?ID_post=' . $postID . '"><img class="btn postIcon" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" src="\HoriWeb\icon\delete.png"/></a>';
+      $html .= '<a href="/HoriWeb/sensible.php?ID_post=' . $postID . '"><img class="btn postIcon" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" src="\HoriWeb\icon\sensible.png"/></a>';
+  }
 
-    // Fermeture du bloc HTML pour le post
-    $html .= '</div></div>';
+  // Bouton de commentaire
+  $html .= '<img class="btn postIcon" data-bs-toggle="modal" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-bs-target="#comment" id="' . $postID . '" src="\HoriWeb\icon\comment.png"/>';
 
-    // Retourner le code HTML généré
-    return $html;
+  // Bouton de like/dislike
+  if (isset($_SESSION['ID']) && isLike($postID, $_SESSION['ID'])) {
+      $html .= '<img class="btn postIcon" id="islike" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-like-id="' . $postID . '" src="\HoriWeb\icon\islike.png"/>';
+  } else {
+      $html .= '<img class="btn postIcon" id="like" style="margin-left: 20px; margin-right: 20px;width: 70px; height: 70px;" data-like-id="' . $postID . '" src="\HoriWeb\icon\like.png"/>';
+  }
+
+  // Nombre de likes
+  $html .= '<span class="numberOfLike" style="margin-left:20px; margin-bottom:auto; width: 200px; height: 40px; display: inline-flex; font-size: 20px;color: black;max-width: 100%;text-align: center;line-height: normal;">';
+  $resultlike = getLike($postID);
+  $html .= ($resultlike != null) ? $resultlike : '0';
+  $html .= '</span>';
+
+  // Fermeture du bloc HTML pour le post
+  $html .= '</div></div>';
+
+  // Retourner le code HTML généré
+  return $html;
 }
 
+
 function generateUserHTML($row) {
-    $html = '<div class="user" id="' . $row['ID'] . '">';
+    $html = '<div class="user" id="' . $row['ID_user'] . '">';
     $html .= '<h3>' . $row['Username'] . '</h3>';
     $html .= '</div>';
+    
     return $html;
 }
 

@@ -5,35 +5,17 @@ if(!isset($_SESSION)){
 }
 require_once("./PageParts/dbConnect.php");
 dbConnect();
-
-if ($connexion) {
-    $sql = "SELECT * FROM users WHERE ID_User=1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $nombre_resultats = count($result);
-    if ($nombre_resultats > 0) {
-        $username = $result[0]["Username"];
-        $name=$result[0]["Name"];
-        $firstname=$result[0]["FirstName"];
-        $description=$result[0]["ProfilDescription"];
-        $picture=$result[0]["ProfilePicture"];
-        $date=$result[0]["Birthdate"];
-        $mail=$result[0]["email"];
-    }
-
-    $sql = "SELECT COUNT(*) from posts where ID_user=1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
-    $nb_posts = $stmt->fetchColumn();
-
-    $sql = "SELECT COUNT(*) from followers where ID_user=1";
-    $stmt = $connexion->prepare($sql);
-    $stmt->execute();
-    $nb_follower = $stmt->fetchColumn();
-} else {
-    echo "Erreur de connexion à la base de données.";
+if(!isset($_SESSION['ID'])){
+    header("Location: ./login.php");
+    exit();
 }
+$User = getUser($_SESSION['ID']);
+$username = $User['Username'];
+$firstname = $User['FirstName'];
+$name = $User['Name'];
+$birthdate = $User['Birthdate'];
+$description = $User['ProfilDescription'];
+
 
 ?>
 <!DOCTYPE html>
@@ -117,12 +99,30 @@ if ($connexion) {
     <div class="profile">
         <h1>Modifier le profil</h1>
         <img id="profilePic" src="./icon/user.png" alt="Photo de profil">
-        <form id="profileForm">
-            <label for="profilePicInput">Modifier la photo de profil</label>
-            <input type="file" id="profilePicInput" name="profilePic" accept="image/*">
-            <input type="text" id="username" name="username" value=<?php echo $username?>>
-            <textarea id="description" name="description" rows="4" placeholder="Description de l'utilisateur"></textarea>
-            <input type="submit" value="Enregistrer les modifications">
+        <form id="profileForm" action="./action/updateUser.php">
+
+            <label for="description">Changer la photo de profil</label></br>
+            <input type="file" id="profilePic" name="profilePic">
+
+            <span for="username">Nom d'utilisateur</>
+            <input type="text" name="username" value="<?php echo $username?>" required>
+
+            <span for="firstname">Prénom</>
+            <input type="text" name="firstname" value="<?php echo $firstname?>" required>
+
+            <span for="name">Nom</>
+            <input type="text" name="name" value="<?php echo $name?>" required>
+
+            <span for="birthdate">Date de naissance</></br>
+            <input type="date" name="birthdate" value="<?php echo $birthdate?>" required></br>
+
+            <span for="password">Changer le mot de passe</>
+            <input type="password" name="password">
+
+            <span for="description">Description</>
+            <textarea name="description" rows="5" required><?php echo $description?></textarea>
+
+            <input type="submit" value="Enregistrer">
         </form>
     </div>
 </body>
